@@ -3,30 +3,30 @@ import { GiNotebook } from "react-icons/gi";
 import { SlNote } from "react-icons/sl";
 const skillsData = [
     {
-      name: "Best Price",
+      name: "Giá tốt nhất",
       icon: (
         <FaCameraRetro className="text-5xl text-primary group-hover:text-black duration-300" />
       ),
       link: "#",
-      description: "Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
+      description: "Chúng tôi cung cấp mức giá cạnh tranh nhất trên thị trường.",
       aosDelay: "0",
     },
     {
-      name: "Fast and Safe",
+      name: "Nhanh chóng và an toàn",
       icon: (
         <GiNotebook className="text-5xl text-primary group-hover:text-black duration-300" />
       ),
       link: "#",
-      description: "Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
+      description: "Dịch vụ an toàn, nhanh chóng với thủ tục đơn giản.",
       aosDelay: "500",
     },
     {
-      name: "Experience Drivers",
+      name: "Tài xế chuyên nghiệp",
       icon: (
         <SlNote className="text-5xl text-primary group-hover:text-black duration-500" />
       ),
       link: "#",
-      description: "Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
+      description: "Đội ngũ tài xế có kinh nghiệm, thông thạo địa phương.",
       aosDelay: "1000",
     },
   ];
@@ -41,7 +41,7 @@ const ServiceHome = () => {
               data-aos="fade-up"
               className="text-3xl font-semibold text-center sm:text-4xl font-serif"
             >
-              Why Choose Us
+              Tại sao chọn chúng tôi?
             </h1>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -59,7 +59,7 @@ const ServiceHome = () => {
                   href={skill.link}
                   className="inline-block text-lg font-semibold py-3 text-primary group-hover:text-black duration-300"
                 >
-                  Learn more
+                  Tìm hiểu thêm
                 </a>
               </div>
             ))}
@@ -70,4 +70,4 @@ const ServiceHome = () => {
   )
 }
 
-export default ServiceHome
+export default ServiceHome;

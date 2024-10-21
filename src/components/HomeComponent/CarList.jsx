@@ -34,12 +34,11 @@ const CarList = () => {
             data-aos="fade-up"
             className="text-3xl sm:text-4xl font-semibold font-serif mb-3"
           >
-            Lorem ipsum dolor
+            Xe nổi bật
           </h1>
           <p data-aos="fade-up" className="text-sm pb-10">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor iure
-            nemo ab?
-          </p>
+  Chúng tôi cung cấp các mẫu xe hiện đại và đa dạng, đáp ứng mọi nhu cầu di chuyển của bạn. Từ xe gia đình đến xe hạng sang, hãy chọn chiếc xe phù hợp nhất cho chuyến hành trình của bạn.
+</p>
           {/* Car listing */}
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-16">
@@ -58,10 +57,10 @@ const CarList = () => {
                   <div className="space-y-2">
                     <h1 className="text-primary font-semibold">{data.name}</h1>
                     <div className="flex justify-between items-center text-xl font-semibold">
-                      <p>${data.price}/Day</p>
+                      <p>${data.price}/Ngày</p>
                       <Link to="/booking">
                         <button className="border border-yellow-700 text-black py-2 px-4 rounded-md hover:bg-gray-100 transition duration-300">
-                          Rent Now
+                          Thuê
                         </button>
                       </Link>
                     </div>
@@ -81,7 +80,7 @@ const CarList = () => {
                 data-aos-delay="1500"
                 className="rounded-md bg-primary hover:bg-primary/80 transition duration-500 py-2 px-6 text-black"
               >
-                Get Started
+               Bắt đầu ngay
               </button>
             </div>
           </Link>
