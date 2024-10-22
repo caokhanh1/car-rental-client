@@ -1,10 +1,11 @@
 import { useContext, useState } from "react";
 import { Modal, Button, TextInput, Label, Avatar } from "flowbite-react";
-import { HiPencil } from "react-icons/hi";
+// import { HiPencil } from "react-icons/hi";
 import AuthContext from "../../context/AuthContext";
 
 export default function DashProfile() {
   const { user } = useContext(AuthContext);
+  console.log(user);
 
   const [showModal, setShowModal] = useState(false);
   const [profileData, setProfileData] = useState(user);
@@ -35,9 +36,9 @@ export default function DashProfile() {
         <h2 className="text-2xl font-semibold leading-tight mb-4">Profile</h2>
         <div className="bg-white shadow-md rounded-lg p-6">
           <div className="flex items-center mb-6">
-            <Avatar img={profileData.avatar} rounded={true} size="xl" />
+            <Avatar img={profileData.image_url} rounded={true} size="xl" />
             <div className="ml-6">
-              <h3 className="text-xl font-bold">{profileData.fullName}</h3>
+              <h3 className="text-xl font-bold">{profileData.unique_name}</h3>
               <p className="text-gray-600">{profileData.email}</p>
             </div>
           </div>
@@ -47,7 +48,7 @@ export default function DashProfile() {
               <TextInput
                 id="fullName"
                 type="text"
-                value={profileData.username}
+                value={profileData.unique_name}
                 readOnly
                 className="bg-gray-100"
               />
@@ -77,20 +78,20 @@ export default function DashProfile() {
               <TextInput
                 id="status"
                 type="text"
-                value={profileData.isActive}
+                value={profileData.is_active}
                 readOnly
                 className="bg-gray-100"
               />
             </div>
           </div>
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <Button
               onClick={() => setShowModal(true)}
               gradientDuoTone="cyanTo-blue"
             >
               <HiPencil className="mr-2" /> Edit Profile
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
 

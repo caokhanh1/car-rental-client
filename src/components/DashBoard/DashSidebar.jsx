@@ -69,11 +69,6 @@ export default function DashSidebar() {
               <div className="text-sm font-semibold text-gray-600 mb-2 ml-4">
                 Vehicle Manage
               </div>
-              <Link to="/dashboard?tab=vehicles">
-                <Sidebar.Item active={tab === "vehicles"} icon={FaCar} as="div">
-                  Vehicle Manage
-                </Sidebar.Item>
-              </Link>
               {/* <Link to="/dashboard?tab=vehicle-rates">
                 <Sidebar.Item
                   active={tab === "vehicle-rates"}
@@ -90,6 +85,11 @@ export default function DashSidebar() {
                   as="div"
                 >
                   Vehicle Types
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=vehicles">
+                <Sidebar.Item active={tab === "vehicles"} icon={FaCar} as="div">
+                  Vehicle Manage
                 </Sidebar.Item>
               </Link>
             </Sidebar.ItemGroup>

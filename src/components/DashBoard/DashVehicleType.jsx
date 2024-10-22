@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { HiPencil, HiPlus, HiTrash } from "react-icons/hi";
 import useAxios from "../../utils/useAxios";
 import { toast } from "react-toastify";
 import Pagination from "../Pagination";
+import DeleteVehicleType from "./vehicle-type/DeleteVehicleType";
+import CreateVehicleType from "./vehicle-type/CreateVehicleType";
+import EditVehicleType from "./vehicle-type/EditVehicleType";
 
 const DashVehicleType = () => {
   let api = useAxios();
@@ -10,27 +13,44 @@ const DashVehicleType = () => {
   const didFetchData = useRef(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [newVehicleType, setNewVehicleType] = useState(initVehicleType());
+  const [currentVehicleType, setCurrentVehicleType] = useState(
+    initVehicleType()
+  );
+  const [vehicleTypeIdToDelete, setVehicleTypeIdToDelete] = useState(null);
+
   const limit = 5;
+
+  function initVehicleType() {
+    return {
+      id: "",
+      type: "",
+      detail: "",
+    };
+  }
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  useEffect(() => {
-    const fetchVehicleTypes = async () => {
-      try {
-        const { data, status } = await api.get("/car-types");
-        if (status === 200) {
-          setVehicleTypesData(data);
-        }
-      } catch (error) {
-        toast.error("Error fetching vehicle types");
-      }
-    };
+  const fetchVehicleTypes = useCallback(async () => {
+    try {
+      const { data, status } = await api.get("/car-types");
+      if (status === 200) setVehicleTypesData(data);
+    } catch {
+      toast.error("Error fetching vehicle types");
+    }
+  }, [api]);
 
+  useEffect(() => {
     if (!didFetchData.current) {
       fetchVehicleTypes();
       didFetchData.current = true;
     }
-  }, []);
+  }, [fetchVehicleTypes]);
 
   const filteredVehicleTypes = vehicleTypes.filter(
     (vehicle) =>
@@ -46,6 +66,65 @@ const DashVehicleType = () => {
     indexOfFirstUser,
     indexOfLastUser
   );
+
+  const handleEditVehicle = (vehicle) => {
+    setCurrentVehicleType(vehicle);
+    setShowEditModal(true);
+  };
+
+  const handleInputChange = (e, setState) => {
+    const { name, value } = e.target;
+    setState((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCreateVehicle = async () => {
+    try {
+      const { status } = await api.post("/car-types", newVehicleType);
+      if (status === 200) {
+        toast.success("Vehicle type created successfully");
+        setShowCreateModal(false);
+        setNewVehicleType(initVehicleType());
+        fetchVehicleTypes();
+      }
+    } catch {
+      toast.error("Error creating vehicle type");
+    }
+  };
+
+  const handleUpdateVehicle = async () => {
+    try {
+      const { status } = await api.put(
+        `/car-types/${currentVehicleType.id}`,
+        currentVehicleType
+      );
+      if (status === 200) {
+        toast.success("Vehicle type updated successfully");
+        setShowEditModal(false);
+        fetchVehicleTypes();
+      }
+    } catch {
+      toast.error("Error updating vehicle type");
+    }
+  };
+
+  const handleDeleteVehicleType = (id) => {
+    setVehicleTypeIdToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await api.delete(`/car-types/${vehicleTypeIdToDelete}`);
+      toast.success("Vehicle deleted successfully");
+      setShowDeleteModal(false);
+      fetchVehicleTypes();
+    } catch {
+      toast.error("Error deleting vehicle");
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-8 mt-6">
@@ -65,7 +144,10 @@ const DashVehicleType = () => {
                 setCurrentPage(1);
               }}
             />
-            <button className="bg-gray-600 text-white p-3 rounded-full flex items-center justify-center">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-gray-600 text-white p-3 rounded-full flex items-center justify-center"
+            >
               <HiPlus className="text-2xl" />
             </button>
           </div>
@@ -103,10 +185,18 @@ const DashVehicleType = () => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <div className="flex justify-center items-center space-x-2">
-                        <button className="text-indigo-600 hover:text-indigo-900 flex items-center">
+                        <button
+                          onClick={() => handleEditVehicle(vehicleType)}
+                          className="text-indigo-600 hover:text-indigo-900 flex items-center"
+                        >
                           <HiPencil className="mr-1" />
                         </button>
-                        <button className="text-red-600 hover:text-red-900 flex items-center">
+                        <button
+                          onClick={() =>
+                            handleDeleteVehicleType(vehicleType.id)
+                          }
+                          className="text-red-600 hover:text-red-900 flex items-center"
+                        >
                           <HiTrash className="mr-1" />
                         </button>
                       </div>
@@ -116,13 +206,36 @@ const DashVehicleType = () => {
               </tbody>
             </table>
           </div>
-          {/* Pagination */}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={paginate}
             pageSize={limit}
             totalEntries={filteredVehicleTypes.length}
+          />
+
+          <CreateVehicleType
+            show={showCreateModal}
+            onClose={() => setShowCreateModal(false)}
+            newVehicleType={newVehicleType}
+            setNewVehicleType={setNewVehicleType}
+            handleInputChange={handleInputChange}
+            handleCreateVehicleType={handleCreateVehicle}
+          />
+
+          <EditVehicleType
+            show={showEditModal}
+            onClose={() => setShowEditModal(false)}
+            currentVehicleType={currentVehicleType}
+            setCurrentVehicleType={setCurrentVehicleType}
+            handleInputChange={handleInputChange}
+            handleUpdateVehicleType={handleUpdateVehicle}
+          />
+
+          <DeleteVehicleType
+            show={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            confirmDelete={confirmDelete}
           />
         </div>
       </div>

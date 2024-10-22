@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   HiPencil,
   HiPlus,
@@ -10,70 +10,164 @@ import useAxios from "../../utils/useAxios";
 import { toast } from "react-toastify";
 import Pagination from "../Pagination";
 
+import CreateVehicleModal from "./vehicle/CreateVehicleModal";
+import EditVehicleModal from "./vehicle/EditVehicleModal";
+import DeleteVehicleModal from "./vehicle/DeleteVehicleModal";
+import ImageViewerModal from "./ImageViewerModal";
+
 const DashVehicle = () => {
-  let api = useAxios();
+  const api = useAxios();
+  const didFetchData = useRef(false);
+
   const [vehicleTypes, setVehicleTypesData] = useState([]);
   const [vehicleTypeOptions, setVehicleTypeOptions] = useState([]);
-  const didFetchData = useRef(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [newVehicle, setNewVehicle] = useState(initVehicle());
+  const [currentVehicle, setCurrentVehicle] = useState(initVehicle());
+  const [vehicleIdToDelete, setVehicleIdToDelete] = useState(null);
+
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
   const limit = 5;
+
+  // Helper function to initialize vehicle state
+  function initVehicle() {
+    return {
+      id: "",
+      name: "",
+      licensePlate: "",
+      pricePerHour: 0,
+      pricePerDay: 0,
+      imageURL: "",
+      carTypeID: "",
+    };
+  }
+
+  const handleInputChange = (e, setState, field) => {
+    const { value } = e.target;
+    setState((prev) => ({
+      ...prev,
+      [field]: field.includes("price") ? parseFloat(value) : value,
+    }));
+  };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Fetching data functions
+  const fetchVehicles = useCallback(async () => {
+    try {
+      const { data, status } = await api.get("/cars");
+      if (status === 200) setVehicleTypesData(data);
+    } catch {
+      toast.error("Error fetching vehicles");
+    }
+  }, [api]);
+
+  const fetchVehicleTypes = useCallback(async () => {
+    try {
+      const { data, status } = await api.get("/car-types");
+      if (status === 200) setVehicleTypeOptions(data);
+    } catch {
+      toast.error("Error fetching vehicle types");
+    }
+  }, [api]);
+
   useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const { data, status } = await api.get("/cars");
-        if (status === 200) {
-          setVehicleTypesData(data);
-        }
-      } catch (error) {
-        toast.error("Error fetching vehicles");
-      }
-    };
-
-    const fetchVehicleTypes = async () => {
-      try {
-        const { data, status } = await api.get("/car-types");
-        if (status === 200) {
-          setVehicleTypeOptions(data);
-        }
-      } catch (error) {
-        toast.error("Error fetching vehicle types");
-      }
-    };
-
     if (!didFetchData.current) {
       fetchVehicles();
       fetchVehicleTypes();
       didFetchData.current = true;
     }
-  }, []);
+  }, [fetchVehicles, fetchVehicleTypes]);
 
   const filteredVehicles = vehicleTypes.filter((vehicle) => {
     const matchesSearch = vehicle.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
-    const matchesType = filterType ? vehicle.type === filterType : true;
+    const matchesType = filterType
+      ? vehicle.carTypeID.toString() === filterType
+      : true;
     return matchesSearch && matchesType;
   });
 
   const totalPages = Math.ceil(filteredVehicles.length / limit);
-  const indexOfLastUser = currentPage * limit;
-  const indexOfFirstUser = indexOfLastUser - limit;
+
   const currentVehicles = filteredVehicles.slice(
-    indexOfFirstUser,
-    indexOfLastUser
+    (currentPage - 1) * limit,
+    currentPage * limit
   );
+
+  const handleCreateVehicle = async () => {
+    try {
+      const { status } = await api.post("/cars", newVehicle);
+      if (status === 200) {
+        toast.success("Vehicle created successfully");
+        setShowCreateModal(false);
+        setNewVehicle(initVehicle());
+        fetchVehicles();
+      }
+    } catch {
+      toast.error("Error creating vehicle");
+    }
+  };
+
+  const handleEditVehicle = (vehicle) => {
+    setCurrentVehicle(vehicle);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateVehicle = async () => {
+    try {
+      const { status } = await api.put(
+        `/cars/${currentVehicle.id}`,
+        currentVehicle
+      );
+      if (status === 200) {
+        toast.success("Vehicle updated successfully");
+        setShowEditModal(false);
+        fetchVehicles();
+      }
+    } catch {
+      toast.error("Error updating vehicle");
+    }
+  };
+
+  const handleDeleteVehicle = (id) => {
+    setVehicleIdToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await api.delete(`/cars/${vehicleIdToDelete}`);
+      toast.success("Vehicle deleted successfully");
+      setShowDeleteModal(false);
+      fetchVehicles();
+    } catch {
+      toast.error("Error deleting vehicle");
+    }
+  };
+
+  // Handle image view modal
+  const handleViewImage = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageModal(true);
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-8 mt-6">
       <div className="py-8">
         <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-semibold leading-tight">
-            Vehicle Types
+            Vehicle Manage
           </h2>
 
           <div className="flex space-x-2">
@@ -87,7 +181,7 @@ const DashVehicle = () => {
             >
               <option value="">All Types</option>
               {vehicleTypeOptions.map((vehicleType) => (
-                <option key={vehicleType.id} value={vehicleType.type}>
+                <option key={vehicleType.id} value={vehicleType.id}>
                   {vehicleType.type}
                 </option>
               ))}
@@ -104,7 +198,10 @@ const DashVehicle = () => {
               }}
             />
 
-            <button className="bg-gray-600 text-white p-3 rounded-full flex items-center justify-center">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-gray-600 text-white p-3 rounded-full flex items-center justify-center"
+            >
               <HiPlus className="text-2xl" />
             </button>
           </div>
@@ -122,6 +219,9 @@ const DashVehicle = () => {
                     Name
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
+                    Type
+                  </th>
+                  <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
                     License Plate
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
@@ -132,6 +232,9 @@ const DashVehicle = () => {
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
                     Price/Day
+                  </th>
+                  <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
+                    Image
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
                     Actions
@@ -146,6 +249,9 @@ const DashVehicle = () => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <p className="text-gray-900">{vehicle.name}</p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
+                      <p className="text-gray-900">{vehicle.carType.type}</p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <p className="text-gray-900">{vehicle.licensePlate}</p>
@@ -166,11 +272,29 @@ const DashVehicle = () => {
                       <p className="text-gray-900">{vehicle.pricePerDay} VND</p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
+                      {vehicle.imageURL ? (
+                        <button
+                          onClick={() => handleViewImage(vehicle.imageURL)}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          View
+                        </button>
+                      ) : (
+                        <p className="text-gray-500">No Image</p>
+                      )}
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <div className="flex justify-center items-center space-x-2">
-                        <button className="text-indigo-600 hover:text-indigo-900 flex items-center">
+                        <button
+                          onClick={() => handleEditVehicle(vehicle)}
+                          className="text-indigo-600 hover:text-indigo-900 flex items-center"
+                        >
                           <HiPencil className="mr-1" />
                         </button>
-                        <button className="text-red-600 hover:text-red-900 flex items-center">
+                        <button
+                          onClick={() => handleDeleteVehicle(vehicle.id)}
+                          className="text-red-600 hover:text-red-900 flex items-center"
+                        >
                           <HiTrash className="mr-1" />
                         </button>
                       </div>
@@ -180,13 +304,45 @@ const DashVehicle = () => {
               </tbody>
             </table>
           </div>
-          {/* Pagination */}
+
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={paginate}
             pageSize={limit}
             totalEntries={filteredVehicles.length}
+          />
+
+          <CreateVehicleModal
+            show={showCreateModal}
+            onClose={() => setShowCreateModal(false)}
+            newVehicle={newVehicle}
+            setNewVehicle={setNewVehicle}
+            vehicleTypeOptions={vehicleTypeOptions}
+            handleInputChange={handleInputChange}
+            handleCreateVehicle={handleCreateVehicle}
+          />
+
+          <EditVehicleModal
+            show={showEditModal}
+            onClose={() => setShowEditModal(false)}
+            currentVehicle={currentVehicle}
+            setCurrentVehicle={setCurrentVehicle}
+            vehicleTypeOptions={vehicleTypeOptions}
+            handleInputChange={handleInputChange}
+            handleUpdateVehicle={handleUpdateVehicle}
+          />
+
+          <DeleteVehicleModal
+            show={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            confirmDelete={confirmDelete}
+          />
+
+          <ImageViewerModal
+            show={showImageModal}
+            onClose={() => setShowImageModal(false)}
+            imageUrl={selectedImage}
           />
         </div>
       </div>
