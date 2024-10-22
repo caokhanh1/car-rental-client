@@ -2,13 +2,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Label, TextInput } from "flowbite-react";
+import { toast } from "react-toastify";
 
-export default function SignUp() {
+const SignUp = () => {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [imageUploaded, setImageUploaded] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -47,11 +46,8 @@ export default function SignUp() {
         ...prev,
         drivingLicense: imageUrl,
       }));
-      setImageUploaded(true);
-      setError(null);
     } catch (error) {
-      console.log(error);
-      setError("Failed to upload image. Please try again.");
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setUploading(false);
     }
@@ -59,10 +55,6 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!imageUploaded) {
-      setError("Please upload your driver's license before signing up.");
-      return;
-    }
     try {
       setLoading(true);
       await axios.post(
@@ -81,7 +73,7 @@ export default function SignUp() {
         },
       });
     } catch (error) {
-      setError(error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
@@ -90,7 +82,6 @@ export default function SignUp() {
   return (
     <div className="p-3 max-w-lg mx-auto mb-100">
       <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
-      {error && <p className="text-red-500 mt-5">{error}</p>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <Label value="Your email" />
@@ -163,4 +154,6 @@ export default function SignUp() {
       </div>
     </div>
   );
-}
+};
+
+export default SignUp;

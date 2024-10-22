@@ -23,8 +23,8 @@ export default function Header() {
         className="self-center text-sm sm:text-xl font-semibold dark:text-white"
       >
         <div className="text-2xl flex items-center gap-2 font-bold font-averia uppercase">
-          <span className="text-slate-500">Xe</span>
-          <span className="text-slate-700">Cho Thuê</span>
+          <span className="text-slate-500">Thuê</span>
+          <span className="text-slate-700">Xe</span>
           <FaCarCrash className="text-yellow-500" />
         </div>
       </Link>
