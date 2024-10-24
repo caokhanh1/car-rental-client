@@ -29,11 +29,11 @@ export default function SignIn() {
   return (
     <div className="mb-100">
       <div className="p-3 max-w-lg mx-auto">
-        <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
+        <h1 className="text-3xl text-center font-semibold my-7">Đăng Nhập</h1>
         {!isVerifying && (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <Label value="Your email" />
+              <Label value="Email của bạn" />
               <TextInput
                 type="email"
                 placeholder="name@gmail.com"
@@ -42,7 +42,7 @@ export default function SignIn() {
               />
             </div>
             <div>
-              <Label value="Your password" />
+              <Label value="Mật khẩu của bạn" />
               <TextInput
                 type="password"
                 placeholder="**********"
@@ -56,7 +56,7 @@ export default function SignIn() {
                 to="/forgot-password"
                 className="text-blue-700 hover:underline"
               >
-                Forgot password?
+                Quên mật khẩu?
               </Link>
             </div>
 
@@ -64,11 +64,11 @@ export default function SignIn() {
               disabled={loading}
               className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
             >
-              {loading ? "Loading..." : "Sign In"}
+              {loading ? "Đang tải..." : "Đăng Nhập"}
             </button>
             <button
               onClick={handleGoogleLogin}
-              aria-label="Sign in with Google"
+              aria-label="Đăng nhập bằng Google"
               className="flex items-center justify-center bg-white border border-button-border-light rounded-md p-2"
             >
               <div className="flex items-center justify-center bg-white w-9 h-9 rounded-l">
@@ -77,8 +77,8 @@ export default function SignIn() {
                   viewBox="0 0 24 24"
                   className="w-5 h-5"
                 >
-                  <title>Sign in with Google</title>
-                  <desc>Google G Logo</desc>
+                  <title>Đăng nhập bằng Google</title>
+                  <desc>Logo Google</desc>
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                     className="fill-google-logo-blue"
@@ -98,7 +98,7 @@ export default function SignIn() {
                 </svg>
               </div>
               <span className="text-sm text-google-text-gray tracking-wider ml-2">
-                Sign in with Google
+                Đăng nhập bằng Google
               </span>
             </button>
           </form>
@@ -106,10 +106,10 @@ export default function SignIn() {
         {isVerifying && authTokens && (
           <form onSubmit={handleVerifyCode} className="flex flex-col gap-4">
             <div>
-              <Label value="Enter Verification Code" />
+              <Label value="Nhập mã xác thực" />
               <TextInput
                 type="text"
-                placeholder="Verification Code"
+                placeholder="Mã xác thực"
                 onChange={(e) => handleVerifyCode(e, formData.email)}
               />
             </div>
@@ -117,16 +117,16 @@ export default function SignIn() {
               disabled={loading}
               className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
             >
-              {loading ? "Loading..." : "Verify"}
+              {loading ? "Đang tải..." : "Xác thực"}
             </button>
           </form>
         )}
 
         {!isVerifying && (
           <div className="flex gap-2 mt-5">
-            <p>Do not have an account?</p>
+            <p>Chưa có tài khoản?</p>
             <Link to="/sign-up">
-              <span className="text-blue-700">Sign up</span>
+              <span className="text-blue-700">Đăng ký</span>
             </Link>
           </div>
         )}

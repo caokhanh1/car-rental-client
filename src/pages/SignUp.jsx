@@ -81,10 +81,10 @@ const SignUp = () => {
 
   return (
     <div className="p-3 max-w-lg mx-auto mb-100">
-      <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
+      <h1 className="text-3xl text-center font-semibold my-7">Đăng Ký</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <Label value="Your email" />
+          <Label value="Email của bạn" />
           <TextInput
             type="email"
             placeholder="name@gmail.com"
@@ -93,36 +93,36 @@ const SignUp = () => {
           />
         </div>
         <div>
-          <Label value="Your password" />
+          <Label value="Mật khẩu của bạn" />
           <TextInput
             type="password"
-            placeholder="Password"
+            placeholder="Mật khẩu"
             id="password"
             onChange={handleChange}
           />
         </div>
 
         <div>
-          <Label value="Username" />
+          <Label value="Tên người dùng" />
           <TextInput
             type="text"
-            placeholder="Username"
+            placeholder="Tên người dùng"
             id="username"
             onChange={handleChange}
           />
         </div>
         <div>
-          <Label value="Phone" />
+          <Label value="Số điện thoại" />
           <TextInput
             type="tel"
-            placeholder="Phone"
+            placeholder="Số điện thoại"
             id="phone"
             onChange={handleChange}
           />
         </div>
 
         <div>
-          <Label value="Upload Driver's License" />
+          <Label value="Tải lên giấy phép lái xe" />
           <input
             type="file"
             id="drivingLicense"
@@ -137,19 +137,19 @@ const SignUp = () => {
           />
         </div>
 
-        {uploading && <p className="text-blue-500 mt-2">Uploading image...</p>}
+        {uploading && <p className="text-blue-500 mt-2">Đang tải hình ảnh...</p>}
 
         <button
           disabled={loading}
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
         >
-          {loading ? "Loading..." : "Sign Up"}
+          {loading ? "Đang tải..." : "Đăng Ký"}
         </button>
       </form>
       <div className="flex gap-2 mt-5">
-        <p>Have an account?</p>
+        <p>Đã có tài khoản?</p>
         <Link to="/sign-in">
-          <span className="text-blue-700">Sign in</span>
+          <span className="text-blue-700">Đăng nhập</span>
         </Link>
       </div>
     </div>
