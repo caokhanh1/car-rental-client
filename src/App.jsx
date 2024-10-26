@@ -17,11 +17,14 @@ import PaymentPage from "./pages/PaymentPage";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRedirect from "./utils/AuthRedirect";
 import AuthAdminRedirect from "./utils/AuthAdminRedirect";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ToastContainer />
         <Header />
         <Routes>
           <Route
@@ -83,13 +86,14 @@ export default function App() {
           />
 
           <Route
-            path="/booking"
+            path="/booking/:carId"
             element={
               <UserPrivateRoute>
                 <Booking />
               </UserPrivateRoute>
             }
           />
+
           <Route
             path="/payment"
             element={

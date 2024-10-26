@@ -1,7 +1,38 @@
-import { Link } from "react-router-dom";
-import car1 from "../../assets/car1.png";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import useAxios from "../../utils/useAxios";
 
 const BookingPage = () => {
+  const api = useAxios();
+  const { carId } = useParams();
+  const [car, setCar] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCar = async () => {
+      try {
+        const { data, status } = await api.get(`/users/cars/${carId}`);
+        if (status === 200) {
+          setCar(data);
+        }
+      } catch (error) {
+        console.error("Error fetching car data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCar();
+  }, [carId]);
+
+  if (loading) {
+    return <div className="text-center py-20">Loading...</div>;
+  }
+
+  if (!car) {
+    return <div className="text-center py-20">Car not found!</div>;
+  }
+
   return (
     <div className="max-w-7xl mx-auto p-6 mt-10 space-y-12">
       {/* Image and Booking Form Section */}
@@ -9,7 +40,7 @@ const BookingPage = () => {
         {/* Car Image */}
         <div className="flex-1">
           <img
-            src={car1}
+            src={car.imageURL}
             alt="Car"
             className="w-full h-auto rounded-xl shadow-lg transition-transform hover:scale-105 duration-300"
           />
@@ -70,34 +101,35 @@ const BookingPage = () => {
               ></textarea>
             </div>
             <Link to="/payment">
-            <button className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-3 rounded-lg shadow-md hover:from-yellow-600 hover:to-yellow-700 transition-colors duration-300">
-              Book Now
-            </button>
+              <button className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-3 rounded-lg shadow-md hover:from-yellow-600 hover:to-yellow-700 transition-colors duration-300">
+                Book Now
+              </button>
             </Link>
-            
           </form>
         </div>
       </div>
 
       {/* Vehicle Overview */}
       <div className="space-y-6">
-        <h2 className="text-3xl font-bold mb-4 text-gray-800">Vehicle Overview</h2>
+        <h2 className="text-3xl font-bold mb-4 text-gray-800">
+          Vehicle Overview
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-sm text-gray-500">Body</p>
-            <h3 className="text-lg font-semibold">BMW X3</h3>
+            <h3 className="text-lg font-semibold">{car.body}</h3>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-sm text-gray-500">Make</p>
-            <h3 className="text-lg font-semibold">Nissan</h3>
+            <h3 className="text-lg font-semibold">{car.make}</h3>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-sm text-gray-500">Transmission</p>
-            <h3 className="text-lg font-semibold">Automatic</h3>
+            <h3 className="text-lg font-semibold">{car.transmission}</h3>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-sm text-gray-500">Fuel Type</p>
-            <h3 className="text-lg font-semibold">Diesel</h3>
+            <h3 className="text-lg font-semibold">{car.fuelType}</h3>
           </div>
         </div>
       </div>
@@ -106,17 +138,35 @@ const BookingPage = () => {
       <div className="border-t border-gray-300 pt-6">
         <h2 className="text-3xl font-bold mb-4 text-gray-800">Price Details</h2>
         <ul className="space-y-3 text-lg">
-          <li>Rent/Day: <span className="font-semibold">$300</span> (Negotiable)</li>
-          <li>Rent/Month: <span className="font-semibold">$3000</span> (Negotiable)</li>
-          <li>Service Charge: <span className="font-semibold">$50</span> (Service providing)</li>
-          <li>Extra Service: <span className="font-semibold">As per Service Taken</span></li>
-          <li>Security Deposit: <span className="font-semibold">$3000</span></li>
+          <li>
+            Rent/Hours:{" "}
+            <span className="font-semibold">{car.pricePerHour} VND</span>{" "}
+            (Negotiable)
+          </li>
+          <li>
+            Rent/Day:{" "}
+            <span className="font-semibold">{car.pricePerDay} VND</span>{" "}
+            (Negotiable)
+          </li>
+          <li>
+            Service Charge: <span className="font-semibold">$50</span> (Service
+            providing)
+          </li>
+          <li>
+            Extra Service:{" "}
+            <span className="font-semibold">As per Service Taken</span>
+          </li>
+          <li>
+            Security Deposit: <span className="font-semibold">$3000</span>
+          </li>
         </ul>
       </div>
 
       {/* Terms of Use */}
       <div className="border-t border-gray-300 pt-6">
-        <h2 className="text-3xl font-bold italic mb-4 text-gray-800">Terms of Use</h2>
+        <h2 className="text-3xl font-bold italic mb-4 text-gray-800">
+          Terms of Use
+        </h2>
         <p className="text-gray-700 leading-7">
           Quy định khác: - Sử dụng xe đúng mục đích. - Không sử dụng xe thuê vào
           mục đích phi pháp, trái pháp luật. - Không sử dụng xe thuê để cầm cố,

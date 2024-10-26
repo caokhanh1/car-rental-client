@@ -81,13 +81,13 @@ const SignUp = () => {
 
   return (
     <div className="p-3 max-w-lg mx-auto mb-100">
-      <h1 className="text-3xl text-center font-semibold my-7">Đăng Ký</h1>
+      <h1 className="text-3xl text-center font-semibold my-7">Đăng ký</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <Label value="Email của bạn" />
           <TextInput
             type="email"
-            placeholder="name@gmail.com"
+            placeholder="tenban@gmail.com"
             id="email"
             onChange={handleChange}
           />
@@ -143,7 +143,7 @@ const SignUp = () => {
           disabled={loading}
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
         >
-          {loading ? "Đang tải..." : "Đăng Ký"}
+          {loading ? "Đang tải..." : "Đăng ký"}
         </button>
       </form>
       <div className="flex gap-2 mt-5">

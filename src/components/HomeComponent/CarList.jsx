@@ -72,7 +72,7 @@ const CarList = () => {
             </div>
 
             {/* Rent Now Button */}
-            <Link to="/booking">
+            <Link to={`/booking/${data.id}`}>
               <div className="flex justify-center">
                 <button className="px-4 py-2 bg-white text-black border-2 border-black rounded-full hover:bg-gray-200 transition duration-300">
                   Rent Now

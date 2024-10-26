@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
       : null
   );
   let [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({});
 
   const [isVerifying, setIsVerifying] = useState(false);
 
@@ -29,6 +30,13 @@ export const AuthProvider = ({ children }) => {
 
   const isAuthenticated = () => !!user;
   const isAdmin = () => user && user.role === "Admin";
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -42,8 +50,8 @@ export const AuthProvider = ({ children }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email: e.target.email.value,
-            password: e.target.password.value,
+            email: formData.email,
+            password: formData.password,
           }),
         }
       );
@@ -60,16 +68,27 @@ export const AuthProvider = ({ children }) => {
           navigate("/");
         }
       } else {
-        toast.error(await response.text());
+        const data = await response.json();
+        if (data.code === "USER_IS_NOT_VERIFIED") {
+          setIsVerifying(true);
+          setLoading(false);
+          await fetch(
+            `${import.meta.env.VITE_APP_API_URL}/auths/generate-verifying-code`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: e.target.email.value,
+              }),
+            }
+          );
+        }
       }
     } catch (err) {
-      if (err.response?.data?.code === "USER_IS_NOT_VERIFIED") {
-        setIsVerifying(true);
-        setLoading(false);
-      } else {
-        toast.error(err.response?.data?.message || err.message);
-        setLoading(false);
-      }
+      toast.error(err.response?.data?.message || err.message);
+      setLoading(false);
     }
   };
 
@@ -80,10 +99,10 @@ export const AuthProvider = ({ children }) => {
     navigate("/sign-in");
   };
 
-  const handleVerifyCode = async (e, email) => {
+  const handleVerifyCode = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+    console.log(formData.email, e.target.verificationCode.value);
     try {
       const verificationResponse = await fetch(
         `${import.meta.env.VITE_APP_API_URL}/auths/verify-code`,
@@ -93,19 +112,19 @@ export const AuthProvider = ({ children }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email,
+            email: formData.email,
             code: e.target.verificationCode.value,
           }),
         }
       );
 
       if (verificationResponse.status === 200) {
-        const verificationData = await verificationResponse.json();
-        toast.success(verificationData.message);
+        await loginUser(e);
       } else {
         toast.error(await verificationResponse.text());
       }
     } catch (err) {
+      console.log(err);
       toast.error("An error occurred during verification.");
     } finally {
       setLoading(false);
@@ -161,6 +180,7 @@ export const AuthProvider = ({ children }) => {
     handleGoogleLogin,
     isAuthenticated,
     isAdmin,
+    handleChange,
   };
 
   useEffect(() => {

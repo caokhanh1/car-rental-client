@@ -1,26 +1,17 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { TextInput, Label } from "flowbite-react";
 import AuthContext from "../context/AuthContext";
 
-export default function SignIn() {
-  const [formData, setFormData] = useState({});
-
+const SignIn = () => {
   const {
     loginUser,
     handleVerifyCode,
-    authTokens,
     isVerifying,
     loading,
     handleGoogleLogin,
+    handleChange,
   } = useContext(AuthContext);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
-  };
 
   const handleSubmit = async (e) => {
     await loginUser(e);
@@ -29,14 +20,14 @@ export default function SignIn() {
   return (
     <div className="mb-100">
       <div className="p-3 max-w-lg mx-auto">
-        <h1 className="text-3xl text-center font-semibold my-7">Đăng Nhập</h1>
+        <h1 className="text-3xl text-center font-semibold my-7">Đăng nhập</h1>
         {!isVerifying && (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
               <Label value="Email của bạn" />
               <TextInput
                 type="email"
-                placeholder="name@gmail.com"
+                placeholder="tenban@gmail.com"
                 id="email"
                 onChange={handleChange}
               />
@@ -64,7 +55,7 @@ export default function SignIn() {
               disabled={loading}
               className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
             >
-              {loading ? "Đang tải..." : "Đăng Nhập"}
+              {loading ? "Đang tải..." : "Đăng nhập"}
             </button>
             <button
               onClick={handleGoogleLogin}
@@ -78,7 +69,7 @@ export default function SignIn() {
                   className="w-5 h-5"
                 >
                   <title>Đăng nhập bằng Google</title>
-                  <desc>Logo Google</desc>
+                  <desc>Google G Logo</desc>
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                     className="fill-google-logo-blue"
@@ -103,28 +94,28 @@ export default function SignIn() {
             </button>
           </form>
         )}
-        {isVerifying && authTokens && (
+        {isVerifying && (
           <form onSubmit={handleVerifyCode} className="flex flex-col gap-4">
             <div>
-              <Label value="Nhập mã xác thực" />
+              <Label value="Nhập mã xác minh" />
               <TextInput
                 type="text"
-                placeholder="Mã xác thực"
-                onChange={(e) => handleVerifyCode(e, formData.email)}
+                placeholder="Mã xác minh"
+                id="verificationCode"
               />
             </div>
             <button
               disabled={loading}
               className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
             >
-              {loading ? "Đang tải..." : "Xác thực"}
+              {loading ? "Đang tải..." : "Xác minh"}
             </button>
           </form>
         )}
 
         {!isVerifying && (
           <div className="flex gap-2 mt-5">
-            <p>Chưa có tài khoản?</p>
+            <p>Bạn chưa có tài khoản?</p>
             <Link to="/sign-up">
               <span className="text-blue-700">Đăng ký</span>
             </Link>
@@ -133,4 +124,6 @@ export default function SignIn() {
       </div>
     </div>
   );
-}
+};
+
+export default SignIn;

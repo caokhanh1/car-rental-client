@@ -5,11 +5,10 @@ import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 
-export default function Header() {
+const Header = () => {
   const path = useLocation().pathname;
   const { user, logoutUser, isAdmin } = useContext(AuthContext);
   const [adminView, setAdminView] = useState(isAdmin());
-
   useEffect(() => {
     setAdminView(isAdmin());
   }, [isAdmin]);
@@ -23,7 +22,7 @@ export default function Header() {
         className="self-center text-sm sm:text-xl font-semibold dark:text-white"
       >
         <div className="text-2xl flex items-center gap-2 font-bold font-averia uppercase">
-          <span className="text-slate-500">Thuê</span>
+          <span className="text-slate-500">Thuê </span>
           <span className="text-slate-700">Xe</span>
           <FaCarCrash className="text-yellow-500" />
         </div>
@@ -49,12 +48,12 @@ export default function Header() {
             label={
               <div className="relative">
                 <Avatar
-                  alt="người dùng"
+                  alt="user"
                   img={user.profilePicture}
                   rounded
-                  className={user.isActive === "False" ? "opacity-70" : ""}
+                  className={user.is_active === "False" ? "opacity-70" : ""}
                 />
-                {user.isActive === "False" && (
+                {user.is_active === "False" && (
                   <span
                     className="absolute bottom-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full p-1 flex items-center justify-center"
                     style={{ width: "20px", height: "20px" }}
@@ -74,11 +73,11 @@ export default function Header() {
 
             {user.role === "Admin" ? (
               <Link to={"/dashboard?tab=dash"}>
-                <Dropdown.Item>Bảng Điều Khiển</Dropdown.Item>
+                <Dropdown.Item>Dashboard</Dropdown.Item>
               </Link>
             ) : (
               <Link to={"/profile"}>
-                <Dropdown.Item>Thông Tin Cá Nhân</Dropdown.Item>
+                <Dropdown.Item>Profile</Dropdown.Item>
               </Link>
             )}
 
@@ -87,17 +86,17 @@ export default function Header() {
           </Dropdown>
         ) : (
           <Link to="/sign-in">
-            <Button gradientDuoTone="pinkToOrange">Đăng Nhập</Button>
+            <Button gradientDuoTone="pinkToOrange">Đăng nhập</Button>
           </Link>
         )}
       </div>
 
       <Navbar.Collapse>
         <Navbar.Link active={path === "/"} as={"div"}>
-          <Link to="/">Trang Chủ</Link>
+          <Link to="/">Trang chủ</Link>
         </Navbar.Link>
         <Navbar.Link active={path === "/about"} as={"div"}>
-          <Link to="/about">Giới Thiệu</Link>
+          <Link to="/about">Giới thiệu</Link>
         </Navbar.Link>
         <Navbar.Link active={path === "/cars"} as={"div"}>
           <Link to="/cars">Xe</Link>
@@ -105,4 +104,6 @@ export default function Header() {
       </Navbar.Collapse>
     </Navbar>
   );
-}
+};
+
+export default Header;
