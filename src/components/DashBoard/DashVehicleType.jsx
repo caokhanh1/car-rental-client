@@ -38,7 +38,7 @@ const DashVehicleType = () => {
 
   const fetchVehicleTypes = useCallback(async () => {
     try {
-      const { data, status } = await api.get("/car-types");
+      const { data, status } = await api.get("/admins/car-types");
       if (status === 200) setVehicleTypesData(data);
     } catch {
       toast.error("Error fetching vehicle types");
@@ -82,7 +82,7 @@ const DashVehicleType = () => {
 
   const handleCreateVehicle = async () => {
     try {
-      const { status } = await api.post("/car-types", newVehicleType);
+      const { status } = await api.post("/admins/car-types", newVehicleType);
       if (status === 200) {
         toast.success("Vehicle type created successfully");
         setShowCreateModal(false);
@@ -97,7 +97,7 @@ const DashVehicleType = () => {
   const handleUpdateVehicle = async () => {
     try {
       const { status } = await api.put(
-        `/car-types/${currentVehicleType.id}`,
+        `/admins/car-types/${currentVehicleType.id}`,
         currentVehicleType
       );
       if (status === 200) {
@@ -117,7 +117,7 @@ const DashVehicleType = () => {
 
   const confirmDelete = async () => {
     try {
-      await api.delete(`/car-types/${vehicleTypeIdToDelete}`);
+      await api.delete(`/admins/car-types/${vehicleTypeIdToDelete}`);
       toast.success("Vehicle deleted successfully");
       setShowDeleteModal(false);
       fetchVehicleTypes();

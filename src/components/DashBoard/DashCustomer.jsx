@@ -28,7 +28,7 @@ export default function DashCustomers() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data, status } = await api.get("/users");
+        const { data, status } = await api.get("/admins/users");
         if (status === 200) setUsers(data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -67,7 +67,7 @@ export default function DashCustomers() {
     const userToUpdate = updatedUsers.find((user) => user.id === userId);
 
     try {
-      await api.put(`/users/${userId}/active`, {
+      await api.put(`/admins/users/${userId}/active`, {
         isActive: userToUpdate.isActive,
       });
     } catch (error) {

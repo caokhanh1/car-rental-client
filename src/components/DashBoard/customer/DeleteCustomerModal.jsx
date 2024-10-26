@@ -8,7 +8,7 @@ const DeleteCustomerModal = ({ show, onClose, userIdToDelete, setUsers }) => {
 
   const confirmDelete = async () => {
     try {
-      await api.delete(`/users/${userIdToDelete}`);
+      await api.delete(`/admins/users/${userIdToDelete}`);
       setUsers((prevUsers) =>
         prevUsers.filter((user) => user.id !== userIdToDelete)
       );

@@ -48,7 +48,7 @@ const EditCustomerModal = ({
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`/users/${currentUser.id}`, currentUser);
+      await axios.put(`/admins/users/${currentUser.id}`, currentUser);
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.id === currentUser.id ? currentUser : user
