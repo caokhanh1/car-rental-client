@@ -1,90 +1,91 @@
-import whiteCar from "../../assets/white-car.png";
-import car2 from "../../assets/car5.png";
-import car3 from "../../assets/car6.png";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
-const carList = [
-  {
-    name: "BMW UX",
-    price: 100,
-    image: whiteCar,
-    aosDelay: "0",
-  },
-  {
-    name: "KIA UX",
-    price: 140,
-    image: car2,
-    aosDelay: "500",
-  },
-  {
-    name: "BMW UX",
-    price: 100,
-    image: car3,
-    aosDelay: "1000",
-  },
-];
-
 const CarList = () => {
+  const [cars, setCars] = useState([]);
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const { data, status } = await axios.get(
+          `${import.meta.env.VITE_APP_API_URL}/guess/cars`,
+          {
+            headers: {
+              "content-type": "application/json",
+            },
+          }
+        );
+        if (status === 200) setCars(data.slice(0, 3));
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+      }
+    };
+
+    fetchCars();
+  }, []);
+
   return (
-    <div>
-      <div className="pb-24">
-        <div className="container">
-          {/* Heading */}
-          <h1
-            data-aos="fade-up"
-            className="text-3xl sm:text-4xl font-semibold font-serif mb-3"
+    <div className="container mx-auto py-12 px-4">
+      <h1 className="text-3xl sm:text-4xl font-bold font-serif text-center mb-8">
+        Car Rental
+      </h1>
+
+      {/* Car Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {cars.map((data, index) => (
+          <div
+            key={index}
+            className="bg-gray-100 text-gray-800 rounded-xl overflow-hidden shadow-lg transform transition duration-300 p-4"
           >
-            Xe nổi bật
-          </h1>
-          <p data-aos="fade-up" className="text-sm pb-10">
-  Chúng tôi cung cấp các mẫu xe hiện đại và đa dạng, đáp ứng mọi nhu cầu di chuyển của bạn. Từ xe gia đình đến xe hạng sang, hãy chọn chiếc xe phù hợp nhất cho chuyến hành trình của bạn.
-</p>
-          {/* Car listing */}
-          <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-16">
-              {carList.map((data, index) => (
-                <div
-                  key={index}
-                  className="space-y-3 border-2 border-gray-300 hover:border-primary p-3 rounded-xl relative group"
-                >
-                  <div className="w-full h-[120px]">
-                    <img
-                      src={data.image}
-                      alt={data.name}
-                      className="w-full h-[120px] object-contain sm:translate-x-8 group-hover:sm:translate-x-16 duration-700"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <h1 className="text-primary font-semibold">{data.name}</h1>
-                    <div className="flex justify-between items-center text-xl font-semibold">
-                      <p>${data.price}/Ngày</p>
-                      <Link to="/booking">
-                        <button className="border border-yellow-700 text-black py-2 px-4 rounded-md hover:bg-gray-100 transition duration-300">
-                          Thuê
-                        </button>
-                      </Link>
-                    </div>
-                  </div>
-                  <p className="text-xl font-semibold absolute top-0 left-3">
-                    12Km
-                  </p>
-                </div>
-              ))}
+            {/* Car Image */}
+            <div className="flex justify-center items-center mb-4">
+              <img
+                src={data.imageURL}
+                alt={data.name}
+                className="w-40 h-40 object-contain"
+              />
             </div>
+
+            {/* Car Name and License Plate */}
+            <div className="text-center mb-2">
+              <h2 className="text-xl font-bold">{data.name}</h2>
+              <p className="text-gray-500">
+                License Plate: {data.licensePlate}
+              </p>
+            </div>
+
+            {/* Price Display */}
+            <div className="flex justify-around items-center mb-4">
+              <div className="text-center">
+                <p className="text-lg font-bold text-black">
+                  {data.pricePerDay.toLocaleString("vi-VN")} VND
+                </p>
+                <p className="text-sm text-gray-500">/ Day</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-bold text-black">
+                  {data.pricePerHour.toLocaleString("vi-VN")} VND
+                </p>
+                <p className="text-sm text-gray-500">/ Hour</p>
+              </div>
+            </div>
+
+            {/* Rent Now Button */}
+            <Link to="/booking">
+              <div className="flex justify-center">
+                <button className="px-4 py-2 bg-white text-black border-2 border-black rounded-full hover:bg-gray-200 transition duration-300">
+                  Rent Now
+                </button>
+              </div>
+            </Link>
           </div>
-          {/* End of car listing */}
-          <Link to="/cars">
-            <div className="grid place-items-center mt-8">
-              <button
-                data-aos="fade-up"
-                data-aos-delay="1500"
-                className="rounded-md bg-primary hover:bg-primary/80 transition duration-500 py-2 px-6 text-black"
-              >
-               Bắt đầu ngay
-              </button>
-            </div>
-          </Link>
-        </div>
+        ))}
+        {cars.length === 0 && (
+          <p className="text-center col-span-full text-gray-500">
+            No cars found matching your criteria.
+          </p>
+        )}
       </div>
     </div>
   );
