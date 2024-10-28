@@ -9,6 +9,7 @@ const Header = () => {
   const path = useLocation().pathname;
   const { user, logoutUser, isAdmin } = useContext(AuthContext);
   const [adminView, setAdminView] = useState(isAdmin());
+
   useEffect(() => {
     setAdminView(isAdmin());
   }, [isAdmin]);
@@ -16,22 +17,21 @@ const Header = () => {
   if (adminView) return <></>;
 
   return (
-    <Navbar className="border-b-2 bg-slate-200 shadow-md p-3">
-      <Link
-        to="/"
-        className="self-center text-sm sm:text-xl font-semibold dark:text-white"
-      >
-        <div className="text-2xl flex items-center gap-2 font-bold font-averia uppercase">
-          <span className="text-slate-500">Thuê </span>
-          <span className="text-slate-700">Xe</span>
+    <Navbar className="border-b-2 bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-md p-3">
+      {/* Logo Section */}
+      <Link to="/" className="flex items-center gap-2">
+        <div className="text-2xl flex items-center gap-2 font-bold uppercase">
+          <span className="text-gray-300">Car</span>
+          <span className="text-gray-300">Rental</span>
           <FaCarCrash className="text-yellow-500" />
         </div>
       </Link>
 
+      {/* Search Section */}
       <form>
         <TextInput
           type="text"
-          placeholder="Tìm kiếm..."
+          placeholder="Search..."
           rightIcon={AiOutlineSearch}
           className="hidden lg:inline"
         />
@@ -40,6 +40,7 @@ const Header = () => {
         <AiOutlineSearch />
       </Button>
 
+      {/* User Section */}
       <div className="flex gap-2 md:order-2">
         {user ? (
           <Dropdown
@@ -73,7 +74,7 @@ const Header = () => {
 
             {user.role === "Admin" ? (
               <Link to={"/dashboard?tab=dash"}>
-                <Dropdown.Item>Dashboard</Dropdown.Item>
+                <Dropdown.Item>DashBoard</Dropdown.Item>
               </Link>
             ) : (
               <Link to={"/profile"}>
@@ -82,25 +83,41 @@ const Header = () => {
             )}
 
             <Dropdown.Divider />
-            <Dropdown.Item onClick={logoutUser}>Đăng xuất</Dropdown.Item>
+            <Dropdown.Item onClick={logoutUser}>Sign out</Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to="/sign-in">
-            <Button gradientDuoTone="pinkToOrange">Đăng nhập</Button>
+            <Button gradientDuoTone="pinkToOrange">Sign In</Button>
           </Link>
         )}
       </div>
 
-      <Navbar.Collapse>
-        <Navbar.Link active={path === "/"} as={"div"}>
-          <Link to="/">Trang chủ</Link>
-        </Navbar.Link>
-        <Navbar.Link active={path === "/about"} as={"div"}>
-          <Link to="/about">Giới thiệu</Link>
-        </Navbar.Link>
-        <Navbar.Link active={path === "/cars"} as={"div"}>
-          <Link to="/cars">Xe</Link>
-        </Navbar.Link>
+      {/* Navbar Links */}
+      <Navbar.Collapse className="hidden lg:flex space-x-4">
+        <Link
+          to="/"
+          className={`${
+            path === "/" ? "text-yellow-500" : "text-gray-300"
+          } hover:text-yellow-500 transition duration-300`}
+        >
+          Home
+        </Link>
+        <Link
+          to="/about"
+          className={`${
+            path === "/about" ? "text-yellow-500" : "text-gray-300"
+          } hover:text-yellow-500 transition duration-300`}
+        >
+          About
+        </Link>
+        <Link
+          to="/cars"
+          className={`${
+            path === "/cars" ? "text-yellow-500" : "text-gray-300"
+          } hover:text-yellow-500 transition duration-300`}
+        >
+          Car
+        </Link>
       </Navbar.Collapse>
     </Navbar>
   );

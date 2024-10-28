@@ -9,7 +9,7 @@ import DashRevenue from "../components/DashBoard/DashRevenue";
 import DashVehicleType from "../components/DashBoard/DashVehicleType";
 import DashVehicle from "../components/DashBoard/DashVehicle";
 
-export default function Dashboard() {
+const Dashboard = () => {
   const location = useLocation();
   const [tab, setTab] = useState("");
 
@@ -40,4 +40,6 @@ export default function Dashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;
