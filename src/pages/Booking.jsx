@@ -1,15 +1,11 @@
-import BookingPage from "../components/BookCar/BookingPage"
-import CommentsSection from "../components/BookCar/CommentsSection"
-
+import BookingPage from "../components/BookCar/BookingPage";
 
 const Booking = () => {
   return (
     <div>
       <BookingPage />
-      <CommentsSection/>
     </div>
-  )
-}
+  );
+};
 
-export default Booking
-
+export default Booking;

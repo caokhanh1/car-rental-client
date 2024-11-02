@@ -1,24 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import AuthContext from "../../context/AuthContext";
+import useAxios from "../../utils/useAxios";
 
 const CarList = () => {
+  let api = useAxios();
   const [cars, setCars] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
+  const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const { data, status } = await axios.get(
-          `${import.meta.env.VITE_APP_API_URL}/guess/cars`,
-          {
-            headers: {
-              "content-type": "application/json",
-            },
-          }
-        );
+        const { data, status } = isAuthenticated
+          ? await api.get("users/cars")
+          : await axios.get(`${import.meta.env.VITE_APP_API_URL}/guess/cars`, {
+              headers: {
+                "content-type": "application/json",
+              },
+            });
         if (status === 200) setCars(data);
       } catch (error) {
         console.error("Error fetching cars:", error);
@@ -67,7 +70,6 @@ const CarList = () => {
         Car Rental
       </h1>
 
-      {/* Category Filter */}
       <div className="flex flex-wrap justify-center mb-8 gap-4">
         {categories.map((category) => (
           <button
@@ -84,7 +86,6 @@ const CarList = () => {
         ))}
       </div>
 
-      {/* Search Bar */}
       <div className="flex justify-center mb-8">
         <input
           type="text"
@@ -95,14 +96,18 @@ const CarList = () => {
         />
       </div>
 
-      {/* Car Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {filteredData.map((data, index) => (
           <div
             key={index}
-            className="bg-gray-100 text-gray-800 rounded-xl overflow-hidden shadow-lg transform transition duration-300 p-4"
+            className="relative bg-gray-100 text-gray-800 rounded-xl overflow-hidden shadow-lg transform transition duration-300 p-4"
           >
-            {/* Car Image */}
+            {!!data.isInUse && (
+              <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                Unavailable
+              </div>
+            )}
+
             <div className="flex justify-center items-center mb-4">
               <img
                 src={data.imageURL}
@@ -111,7 +116,6 @@ const CarList = () => {
               />
             </div>
 
-            {/* Car Name and License Plate */}
             <div className="text-center mb-2">
               <h2 className="text-xl font-bold">{data.name}</h2>
               <p className="text-gray-500">
@@ -119,7 +123,6 @@ const CarList = () => {
               </p>
             </div>
 
-            {/* Price Display */}
             <div className="flex justify-around items-center mb-4">
               <div className="text-center">
                 <p className="text-lg font-bold text-black">
@@ -135,10 +138,9 @@ const CarList = () => {
               </div>
             </div>
 
-            {/* Rent Now Button */}
             <Link to={`/booking/${data.id}`}>
               <div className="flex justify-center">
-                <button className="px-4 py-2 bg-white text-black border-2 border-black rounded-full hover:bg-gray-200 transition duration-300">
+                <button className="px-4 py-2 border-2 rounded-full transition duration-300 bg-white text-black border-black hover:bg-gray-200">
                   Rent Now
                 </button>
               </div>

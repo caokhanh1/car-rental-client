@@ -1,4 +1,3 @@
-
 const CommentsSection = () => {
   const comments = [
     {
@@ -28,10 +27,9 @@ const CommentsSection = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-slate-100 rounded-lg shadow-lg  ">
-      {/* Comments List */}
-      <div>
-        <h3 className="text-2xl font-semibold mb-6">3 Comments</h3>
+    <div className="max-w-7xl mx-auto p-6 mt-1">
+      <h2 className="text-3xl font-bold italic mb-4 text-gray-800">Comments</h2>
+      <div className="p-6 bg-slate-100 rounded-lg shadow-lg">
         <div className="space-y-8">
           {comments.map((comment) => (
             <div key={comment.id} className="flex space-x-4">
@@ -53,35 +51,35 @@ const CommentsSection = () => {
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Comment Form */}
-      <div className="mt-10">
-        <h3 className="text-2xl font-semibold mb-4">Leave a Comment</h3>
-        <form className="space-y-4">
-          <div>
-            <textarea
-              placeholder="Write your comment here"
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
-              rows="5"
-            ></textarea>
-          </div>
-          <div className="flex space-x-4">
-            <input
-              type="text"
-              placeholder="Write your full name here"
-              className="w-1/2 border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
-            />
-            <input
-              type="email"
-              placeholder="Write your email address"
-              className="w-1/2 border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
-            />
-          </div>
-          <button className="bg-black text-white py-2 px-4 rounded-lg">
-            Post Comment
-          </button>
-        </form>
+        {/* Comment Form */}
+        <div className="mt-10">
+          <h3 className="text-2xl font-semibold mb-4">Leave a Comment</h3>
+          <form className="space-y-4">
+            <div>
+              <textarea
+                placeholder="Write your comment here"
+                className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
+                rows="5"
+              ></textarea>
+            </div>
+            <div className="flex space-x-4">
+              <input
+                type="text"
+                placeholder="Write your full name here"
+                className="w-1/2 border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
+              />
+              <input
+                type="email"
+                placeholder="Write your email address"
+                className="w-1/2 border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <button className="bg-black text-white py-2 px-4 rounded-lg">
+              Post Comment
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

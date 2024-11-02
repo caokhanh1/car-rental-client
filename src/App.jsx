@@ -13,7 +13,7 @@ import AdminPrivateRoute from "./utils/AdminPrivateRoute";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
-import PaymentPage from "./pages/PaymentPage";
+import Payment from "./pages/Payment";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRedirect from "./utils/AuthRedirect";
 import AuthAdminRedirect from "./utils/AuthAdminRedirect";
@@ -98,7 +98,7 @@ export default function App() {
             path="/payment"
             element={
               <UserPrivateRoute>
-                <PaymentPage />
+                <Payment />
               </UserPrivateRoute>
             }
           />

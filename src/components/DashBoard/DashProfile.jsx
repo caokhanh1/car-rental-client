@@ -1,11 +1,9 @@
 import { useContext, useState } from "react";
 import { Modal, Button, TextInput, Label, Avatar } from "flowbite-react";
-// import { HiPencil } from "react-icons/hi";
 import AuthContext from "../../context/AuthContext";
 
 export default function DashProfile() {
   const { user } = useContext(AuthContext);
-  console.log(user);
 
   const [showModal, setShowModal] = useState(false);
   const [profileData, setProfileData] = useState(user);

@@ -3,6 +3,7 @@ import useAxios from "../utils/useAxios";
 import { Button, Label } from "flowbite-react";
 import { FaExclamationCircle } from "react-icons/fa";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   let api = useAxios();
@@ -13,7 +14,7 @@ const Profile = () => {
   const [uploading, setUploading] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const Profile = () => {
         setUser(data);
         setFormData(data);
       } catch (err) {
-        setError("Failed to fetch user data");
+        toast.error(err.response?.data?.message || "Failed to fetch user data");
       }
     };
 
@@ -66,7 +67,6 @@ const Profile = () => {
       const imageUrl = res.data.secure_url;
       setUploading(false);
 
-      // Cập nhật trường tương ứng trong formData
       setFormData((prevData) => ({
         ...prevData,
         [fieldName]: imageUrl,
@@ -84,20 +84,18 @@ const Profile = () => {
     });
   };
 
-  // So sánh `formData` với `user`
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     try {
       const response = await api.put("/me", formData);
       const data = response.data;
 
       if (!data.success) {
-        setError(data.message);
+        toast.error(data.message || "Update failed");
         setLoading(false);
         return;
       }
@@ -107,7 +105,7 @@ const Profile = () => {
       setUser(updatedUser);
       setLoading(false);
     } catch (err) {
-      setError(err.response?.data?.message || "Update failed");
+      toast.error(err.response?.data?.message || "Update failed");
       setLoading(false);
     }
   };
@@ -118,7 +116,6 @@ const Profile = () => {
         Profile
       </h1>
 
-      {/* Thông báo nếu tài khoản chưa được kích hoạt */}
       {!user.isActive && (
         <div className="bg-red-100 text-red-700 p-4 mb-6 rounded-lg flex items-center gap-2">
           <FaExclamationCircle className="text-xl" />
@@ -194,33 +191,32 @@ const Profile = () => {
           </div>
 
           {/* Upload Driving License */}
-          {!user.isActive && (
-            <div>
-              <Label value="Upload Driving License" />
-              <div className="mt-2 flex items-center">
-                <input
-                  type="file"
-                  id="licenseFile"
-                  accept="image/*"
-                  onChange={(e) => setLicenseFile(e.target.files[0])}
-                  className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
+
+          <div>
+            <Label value="Upload Driving License" />
+            <div className="mt-2 flex items-center">
+              <input
+                type="file"
+                id="licenseFile"
+                accept="image/*"
+                onChange={(e) => setLicenseFile(e.target.files[0])}
+                className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
+              />
+            </div>
+            {uploading && (
+              <p className="text-blue-500 mt-2">Uploading image...</p>
+            )}
+            {formData.drivingLicense && !uploading && (
+              <div className="mt-4">
+                <Label value="Current Driving License" />
+                <img
+                  src={formData.drivingLicense}
+                  alt="Driving License"
+                  className="mt-2 w-32 h-32 object-cover rounded-md border"
                 />
               </div>
-              {uploading && (
-                <p className="text-blue-500 mt-2">Uploading image...</p>
-              )}
-              {formData.drivingLicense && !uploading && (
-                <div className="mt-4">
-                  <Label value="Current Driving License" />
-                  <img
-                    src={formData.drivingLicense}
-                    alt="Driving License"
-                    className="mt-2 w-32 h-32 object-cover rounded-md border"
-                  />
-                </div>
-              )}
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Save Button */}
           <div className="flex justify-end">
@@ -233,8 +229,6 @@ const Profile = () => {
             </Button>
           </div>
 
-          {/* Error & Success Message */}
-          {error && <p className="text-red-600 mt-4">{error}</p>}
           {updateSuccess && (
             <p className="text-green-600 mt-4">Profile updated successfully!</p>
           )}
