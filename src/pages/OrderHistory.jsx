@@ -132,17 +132,17 @@ const OrderHistory = () => {
           >
             <img
               src={
-                order.carOrders[0].car.imageURL ||
+                order?.carOrder[0]?.car?.imageURL ||
                 "https://via.placeholder.com/150"
               }
-              alt={order.carOrders[0].car.name}
+              alt={order.carOrder[0].car.name}
               className="w-16 h-16 rounded object-cover"
             />
-            <span>{order.carOrders[0].car.name || "Unknown Car"}</span>
+            <span>{order.carOrder[0].car.name || "Unknown Car"}</span>
             <span>
-              {new Date(order.carOrders[0].startDate).toLocaleString()}
+              {new Date(order.carOrder[0].startDate).toLocaleString()}
             </span>
-            <span>{new Date(order.carOrders[0].endDate).toLocaleString()}</span>
+            <span>{new Date(order.carOrder[0].endDate).toLocaleString()}</span>
             <span>{order.cost} VND</span>
             <span className="font-semibold">{order.status}</span>
             <div className="text-right">
@@ -223,15 +223,15 @@ const OrderHistory = () => {
                   <div className="flex items-center space-x-4">
                     <img
                       src={
-                        selectedOrder.carOrders[0].car.imageURL ||
+                        selectedOrder.carOrder[0].car.imageURL ||
                         "https://via.placeholder.com/150"
                       }
-                      alt={selectedOrder.carOrders[0].car.name}
+                      alt={selectedOrder.carOrder[0].car.name}
                       className="w-16 h-16 rounded object-cover"
                     />
                     <div>
                       <h3 className="font-medium text-gray-800">
-                        {selectedOrder.carOrders[0].car.name || "Unknown Car"}
+                        {selectedOrder.carOrder[0].car.name || "Unknown Car"}
                       </h3>
                     </div>
                     {selectedOrder.status !== "New" && (
@@ -252,7 +252,7 @@ const OrderHistory = () => {
                     <span className="text-gray-500">Rental start:</span>
                     <span className="font-semibold text-gray-800">
                       {new Date(
-                        selectedOrder.carOrders[0].startDate
+                        selectedOrder.carOrder[0].startDate
                       ).toLocaleString()}
                     </span>
                   </div>
@@ -260,7 +260,7 @@ const OrderHistory = () => {
                     <span className="text-gray-500">Rental end:</span>
                     <span className="font-semibold text-gray-800">
                       {new Date(
-                        selectedOrder.carOrders[0].endDate
+                        selectedOrder.carOrder[0].endDate
                       ).toLocaleString()}
                     </span>
                   </div>
@@ -358,7 +358,7 @@ const OrderHistory = () => {
           </h2>
           <div className="grid grid-cols-2 gap-6">
             {selectedOrder &&
-              selectedOrder.images.map((imgUrl, index) => (
+              selectedOrder.images?.map((imgUrl, index) => (
                 <img
                   key={index}
                   src={imgUrl}

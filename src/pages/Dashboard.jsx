@@ -8,6 +8,7 @@ import DashCoupon from "../components/DashBoard/DashCoupon";
 import DashRevenue from "../components/DashBoard/DashRevenue";
 import DashVehicleType from "../components/DashBoard/DashVehicleType";
 import DashVehicle from "../components/DashBoard/DashVehicle";
+import DashRentalRequest from "../components/DashBoard/DashRentalRequest";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -36,6 +37,7 @@ const Dashboard = () => {
           {tab === "customers" && <DashCustomer />}
           {tab === "comments" && <DashComments />}
           {tab === "coupon" && <DashCoupon />}
+          {tab === "rentals" && <DashRentalRequest />}
         </div>
       </div>
     </div>

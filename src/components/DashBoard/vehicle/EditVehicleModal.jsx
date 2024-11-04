@@ -74,6 +74,15 @@ const EditVehicleModal = ({
             />
           </div>
           <div>
+            <Label htmlFor="fuel" value="Fuel" />
+            <TextInput
+              id="fuel"
+              type="text"
+              value={currentVehicle.fuel}
+              onChange={(e) => handleInputChange(e, setCurrentVehicle, "fuel")}
+            />
+          </div>
+          <div>
             <Label htmlFor="pricePerHour" value="Price/Hour" />
             <TextInput
               id="pricePerHour"
@@ -163,6 +172,7 @@ EditVehicleModal.propTypes = {
     pricePerDay: PropTypes.number,
     carTypeID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     imageURL: PropTypes.string,
+    fuel: PropTypes.string,
   }).isRequired,
   setCurrentVehicle: PropTypes.func.isRequired,
   vehicleTypeOptions: PropTypes.arrayOf(

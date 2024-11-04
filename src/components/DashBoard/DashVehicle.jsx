@@ -48,6 +48,7 @@ const DashVehicle = () => {
       pricePerDay: 0,
       imageURL: "",
       carTypeID: "",
+      fuel: "",
     };
   }
 
@@ -222,6 +223,9 @@ const DashVehicle = () => {
                     Type
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
+                    Fuel
+                  </th>
+                  <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
                     License Plate
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
@@ -252,6 +256,9 @@ const DashVehicle = () => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <p className="text-gray-900">{vehicle.carType.type}</p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
+                      <p className="text-gray-900">{vehicle.fuel}</p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <p className="text-gray-900">{vehicle.licensePlate}</p>

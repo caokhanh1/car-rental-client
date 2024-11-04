@@ -74,6 +74,15 @@ const CreateVehicleModal = ({
             />
           </div>
           <div>
+            <Label htmlFor="fuel" value="Fuel" />
+            <TextInput
+              id="fuel"
+              type="text"
+              value={newVehicle.fuel}
+              onChange={(e) => handleInputChange(e, setNewVehicle, "fuel")}
+            />
+          </div>
+          <div>
             <Label htmlFor="pricePerHour" value="Price/Hour" />
             <TextInput
               id="pricePerHour"
@@ -149,6 +158,7 @@ CreateVehicleModal.propTypes = {
     pricePerHour: PropTypes.number,
     pricePerDay: PropTypes.number,
     carTypeID: PropTypes.string,
+    fuel: PropTypes.string,
   }).isRequired,
   setNewVehicle: PropTypes.func.isRequired,
   vehicleTypeOptions: PropTypes.arrayOf(
