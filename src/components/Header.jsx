@@ -66,24 +66,36 @@ const Header = () => {
             }
           >
             <Dropdown.Header>
-              <span className="block text-sm">{user.username}</span>
-              <span className="block text-sm font-medium truncate">
-                {user.email}
-              </span>
+              <div className="flex flex-col items-start">
+                <span className="block text-sm font-semibold text-gray-900">
+                  {user.username}
+                </span>
+                <span className="block text-sm text-gray-500 font-medium truncate">
+                  {user.email}
+                </span>
+              </div>
             </Dropdown.Header>
 
-            {user.role === "Admin" ? (
-              <Link to={"/dashboard?tab=dash"}>
-                <Dropdown.Item>DashBoard</Dropdown.Item>
-              </Link>
-            ) : (
-              <Link to={"/profile"}>
-                <Dropdown.Item>Profile</Dropdown.Item>
-              </Link>
-            )}
+            <Link to="/profile">
+              <Dropdown.Item className="hover:bg-gray-100">
+                Profile
+              </Dropdown.Item>
+            </Link>
+
+            <Link to="/orders">
+              <Dropdown.Item className="hover:bg-gray-100">
+                Order history
+              </Dropdown.Item>
+            </Link>
 
             <Dropdown.Divider />
-            <Dropdown.Item onClick={logoutUser}>Sign out</Dropdown.Item>
+
+            <Dropdown.Item
+              onClick={logoutUser}
+              className="text-red-600 hover:bg-red-50"
+            >
+              Sign out
+            </Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to="/sign-in">

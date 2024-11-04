@@ -59,11 +59,6 @@ const BookingPage = () => {
     });
   }, [carId]);
 
-  const calculateCost = () => {
-    const hours = (new Date(returnDate) - new Date(pickupDate)) / 36e5;
-    return hours * car.pricePerHour;
-  };
-
   const handleBooking = async (e) => {
     e.preventDefault();
     try {
@@ -81,15 +76,12 @@ const BookingPage = () => {
         return;
       }
 
-      const cost = calculateCost();
-
       const bookingData = {
         carID: car.id,
         carName: car.name,
         withDriver: drivingOption === "withDriver",
         startDate: pickupDate,
         endDate: returnDate,
-        cost: cost,
         couponID: selectedCoupon || null,
         message: message,
       };

@@ -19,6 +19,7 @@ import AuthRedirect from "./utils/AuthRedirect";
 import AuthAdminRedirect from "./utils/AuthAdminRedirect";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import OrderHistory from "./pages/OrderHistory";
 
 export default function App() {
   return (
@@ -102,11 +103,21 @@ export default function App() {
               </UserPrivateRoute>
             }
           />
+
           <Route
             path="/profile"
             element={
               <UserPrivateRoute>
                 <Profile />
+              </UserPrivateRoute>
+            }
+          />
+
+          <Route
+            path="/orders"
+            element={
+              <UserPrivateRoute>
+                <OrderHistory />
               </UserPrivateRoute>
             }
           />
