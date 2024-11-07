@@ -2,6 +2,7 @@ import { Modal, Button, Label, TextInput } from "flowbite-react";
 import axios from "axios";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import useAxios from "../../../utils/useAxios";
 
 const EditCustomerModal = ({
   show,
@@ -10,6 +11,8 @@ const EditCustomerModal = ({
   setCurrentUser,
   setUsers,
 }) => {
+  const api = useAxios();
+
   const [uploading, setUploading] = useState(false);
 
   const handleFileUpload = async (e) => {
@@ -48,7 +51,7 @@ const EditCustomerModal = ({
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`/admins/users/${currentUser.id}`, currentUser);
+      await api.put(`/admins/users/${currentUser.id}`, currentUser);
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.id === currentUser.id ? currentUser : user

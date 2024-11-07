@@ -21,6 +21,7 @@ const DashVehicle = () => {
 
   const [vehicleTypes, setVehicleTypesData] = useState([]);
   const [vehicleTypeOptions, setVehicleTypeOptions] = useState([]);
+  const [brandOptions, setBrandOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -81,13 +82,23 @@ const DashVehicle = () => {
     }
   }, [api]);
 
+  const fetchBrands = useCallback(async () => {
+    try {
+      const { data, status } = await api.get("/admins/car-brands");
+      if (status === 200) setBrandOptions(data);
+    } catch {
+      toast.error("Error fetching brands");
+    }
+  }, [api]);
+
   useEffect(() => {
     if (!didFetchData.current) {
-      fetchVehicles();
+      fetchBrands();
       fetchVehicleTypes();
+      fetchVehicles();
       didFetchData.current = true;
     }
-  }, [fetchVehicles, fetchVehicleTypes]);
+  }, [fetchVehicles, fetchVehicleTypes, fetchBrands]);
 
   const filteredVehicles = vehicleTypes.filter((vehicle) => {
     const matchesSearch = vehicle.name
@@ -220,6 +231,9 @@ const DashVehicle = () => {
                     Name
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
+                    Brand
+                  </th>
+                  <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
                     Type
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
@@ -253,6 +267,9 @@ const DashVehicle = () => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <p className="text-gray-900">{vehicle.name}</p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
+                      <p className="text-gray-900">{vehicle.carBrand.brand}</p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <p className="text-gray-900">{vehicle.carType.type}</p>
@@ -328,6 +345,7 @@ const DashVehicle = () => {
             vehicleTypeOptions={vehicleTypeOptions}
             handleInputChange={handleInputChange}
             handleCreateVehicle={handleCreateVehicle}
+            brandOptions={brandOptions}
           />
 
           <EditVehicleModal
@@ -338,6 +356,7 @@ const DashVehicle = () => {
             vehicleTypeOptions={vehicleTypeOptions}
             handleInputChange={handleInputChange}
             handleUpdateVehicle={handleUpdateVehicle}
+            brandOptions={brandOptions}
           />
 
           <DeleteVehicleModal

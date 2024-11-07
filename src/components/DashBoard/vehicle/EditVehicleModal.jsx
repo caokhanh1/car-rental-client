@@ -11,6 +11,7 @@ const EditVehicleModal = ({
   vehicleTypeOptions,
   handleInputChange,
   handleUpdateVehicle,
+  brandOptions,
 }) => {
   const [uploading, setUploading] = useState(false);
 
@@ -123,6 +124,24 @@ const EditVehicleModal = ({
             </select>
           </div>
           <div>
+            <Label htmlFor="carBrandID" value="Car Brand" />
+            <select
+              id="carBrandID"
+              value={currentVehicle.carBrandID}
+              onChange={(e) =>
+                handleInputChange(e, setCurrentVehicle, "carBrandID")
+              }
+              className="mt-1 w-full border rounded-md"
+            >
+              <option value="">Select Car Brand</option>
+              {brandOptions.map((brand) => (
+                <option key={brand.id} value={brand.id}>
+                  {brand.brand}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
             <Label value="Upload Vehicle Image" />
             <div className="mt-2 flex items-center">
               <input
@@ -172,6 +191,7 @@ EditVehicleModal.propTypes = {
     carTypeID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     imageURL: PropTypes.string,
     fuel: PropTypes.string,
+    carBrandID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
   setCurrentVehicle: PropTypes.func.isRequired,
   vehicleTypeOptions: PropTypes.arrayOf(
@@ -182,6 +202,12 @@ EditVehicleModal.propTypes = {
   ).isRequired,
   handleInputChange: PropTypes.func.isRequired,
   handleUpdateVehicle: PropTypes.func.isRequired,
+  brandOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default EditVehicleModal;

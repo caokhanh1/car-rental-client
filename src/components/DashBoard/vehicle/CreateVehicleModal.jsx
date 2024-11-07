@@ -11,6 +11,7 @@ const CreateVehicleModal = ({
   vehicleTypeOptions,
   handleInputChange,
   handleCreateVehicle,
+  brandOptions,
 }) => {
   const [uploading, setUploading] = useState(false);
 
@@ -121,6 +122,24 @@ const CreateVehicleModal = ({
             </select>
           </div>
           <div>
+            <Label htmlFor="carBrandID" value="Car Brand" />
+            <select
+              id="carBrandID"
+              value={newVehicle.carBrandID}
+              onChange={(e) =>
+                handleInputChange(e, setNewVehicle, "carBrandID")
+              }
+              className="mt-1 w-full border rounded-md"
+            >
+              <option value="">Select Car Brand</option>
+              {brandOptions.map((brand) => (
+                <option key={brand.id} value={brand.id}>
+                  {brand.brand}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
             <Label value="Upload Vehicle Image" />
             <div className="mt-2 flex items-center">
               <input
@@ -159,6 +178,7 @@ CreateVehicleModal.propTypes = {
     pricePerDay: PropTypes.number,
     carTypeID: PropTypes.string,
     fuel: PropTypes.string,
+    carBrandID: PropTypes.string,
   }).isRequired,
   setNewVehicle: PropTypes.func.isRequired,
   vehicleTypeOptions: PropTypes.arrayOf(
@@ -169,6 +189,12 @@ CreateVehicleModal.propTypes = {
   ).isRequired,
   handleInputChange: PropTypes.func.isRequired,
   handleCreateVehicle: PropTypes.func.isRequired,
+  brandOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default CreateVehicleModal;
