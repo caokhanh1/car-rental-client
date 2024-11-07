@@ -20,12 +20,23 @@ import AuthAdminRedirect from "./utils/AuthAdminRedirect";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import OrderHistory from "./pages/OrderHistory";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ToastContainer />
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <Header />
         <Routes>
           <Route
@@ -118,6 +129,15 @@ export default function App() {
             element={
               <UserPrivateRoute>
                 <OrderHistory />
+              </UserPrivateRoute>
+            }
+          />
+
+          <Route
+            path="/order-confirmation"
+            element={
+              <UserPrivateRoute>
+                <OrderConfirmation />
               </UserPrivateRoute>
             }
           />

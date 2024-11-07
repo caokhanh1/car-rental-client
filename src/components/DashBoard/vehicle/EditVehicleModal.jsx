@@ -136,7 +136,6 @@ const EditVehicleModal = ({
             {uploading && (
               <p className="text-blue-500 mt-2">Uploading image...</p>
             )}
-            {/* Hiển thị ảnh cũ nếu có */}
             {currentVehicle.imageURL && !uploading && (
               <div className="mt-4">
                 <Label value="Current Vehicle Image" />

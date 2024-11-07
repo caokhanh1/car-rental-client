@@ -1,18 +1,23 @@
 import { useState } from "react";
 import { usePayOS } from "payos-checkout";
 import { Button } from "flowbite-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Payment = () => {
+  const location = useLocation();
+  const checkoutUrl = location.state?.checkoutUrl;
   const [paymentMethod, setPaymentMethod] = useState("payos");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isAgreed, setIsAgreed] = useState(false);
   const [showForm, setShowForm] = useState(true);
+  const navigate = useNavigate();
 
   const payOSConfig = {
     RETURN_URL: `${window.location.origin}/order-confirmation`,
     ELEMENT_ID: "payos-checkout",
-    CHECKOUT_URL: "https://pay.payos.vn/web/8f60c03077bf4cf6814169d8e8a3294b",
+    CHECKOUT_URL: checkoutUrl,
     embedded: true,
     onSuccess: (event) => {
       alert("Thanh toán thành công!");
@@ -51,6 +56,14 @@ const Payment = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <div className="fixed top-4 left-4 z-10">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-full p-2 shadow-md transition-colors duration-300"
+        >
+          <FaArrowLeft className="text-xl" />
+        </button>
+      </div>
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8">
         <h1 className="text-4xl font-bold text-center mb-6 text-gray-800">
           Complete Transaction
