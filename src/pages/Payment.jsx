@@ -1,18 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePayOS } from "payos-checkout";
 import { Button } from "flowbite-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import useAxios from "../utils/useAxios";
+import { toast } from "react-toastify";
 
 const Payment = () => {
+  const api = useAxios();
   const location = useLocation();
   const checkoutUrl = location.state?.checkoutUrl;
+  const orderId = location.state?.orderId;
+  const [order, setOrder] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("payos");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isAgreed, setIsAgreed] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const { data, status } = await api.get(`/users/orders/${orderId}`);
+        if (status === 200) {
+          setOrder(data);
+        }
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Failed to fetch orders");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, []);
 
   const payOSConfig = {
     RETURN_URL: `${window.location.origin}/order-confirmation`,
@@ -74,24 +96,20 @@ const Payment = () => {
             <h2 className="text-2xl font-semibold mb-4">Order Summary</h2>
             <ul className="space-y-2">
               <li className="flex justify-between text-lg font-medium">
-                <span>Car Model:</span>
-                <span>BMW X3</span>
+                <span>Rental Start:</span>
+                <span>{new Date(order.startDate).toLocaleString()}</span>
               </li>
               <li className="flex justify-between text-lg font-medium">
-                <span>Rental Duration:</span>
-                <span>3 Days</span>
+                <span>Rental End:</span>
+                <span>{new Date(order.endDate).toLocaleString()}</span>
               </li>
               <li className="flex justify-between text-lg font-medium">
                 <span>Total Amount:</span>
-                <span>$900</span>
-              </li>
-              <li className="flex justify-between text-lg font-medium">
-                <span>Service Charge:</span>
-                <span>$50</span>
+                <span>{order.cost} VND</span>
               </li>
               <li className="flex justify-between text-lg font-bold">
-                <span>Grand Total:</span>
-                <span>$950</span>
+                <span>Deposit:</span>
+                <span>{order.deposit} VND</span>
               </li>
             </ul>
           </div>

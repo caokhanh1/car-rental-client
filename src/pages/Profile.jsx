@@ -91,10 +91,9 @@ const Profile = () => {
     setLoading(true);
 
     try {
-      const response = await api.put("/me", formData);
-      const data = response.data;
+      const { data, status } = await api.put("/me", formData);
 
-      if (!data.success) {
+      if (status !== 200) {
         toast.error(data.message || "Update failed");
         setLoading(false);
         return;

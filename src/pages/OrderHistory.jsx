@@ -133,7 +133,7 @@ const OrderHistory = () => {
       );
       if (status === 200) {
         navigate("/payment", {
-          state: { checkoutUrl: data.checkoutURL },
+          state: { checkoutUrl: data.checkoutURL, orderId },
         });
       }
     } catch (error) {
