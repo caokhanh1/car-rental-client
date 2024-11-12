@@ -21,6 +21,7 @@ const Payment = () => {
 
   useEffect(() => {
     const fetchOrder = async () => {
+      setLoading(true);
       try {
         const { data, status } = await api.get(`/users/orders/${orderId}`);
         if (status === 200) {
@@ -34,7 +35,7 @@ const Payment = () => {
     };
 
     fetchOrder();
-  }, []);
+  }, [orderId]);
 
   const payOSConfig = {
     RETURN_URL: `${window.location.origin}/order-confirmation`,
@@ -42,8 +43,8 @@ const Payment = () => {
     CHECKOUT_URL: checkoutUrl,
     embedded: true,
     onSuccess: (event) => {
-      alert("Thanh toán thành công!");
       console.log(event);
+      navigate("/order-confirmation", { state: { status: "success" } });
     },
     onCancel: (event) => {
       alert("Bạn đã hủy thanh toán.");
@@ -64,6 +65,7 @@ const Payment = () => {
       return;
     }
     setError(null);
+
     setLoading(true);
 
     setShowForm(false);
@@ -90,8 +92,7 @@ const Payment = () => {
         <h1 className="text-4xl font-bold text-center mb-6 text-gray-800">
           Complete Transaction
         </h1>
-
-        {showForm && (
+        {showForm && order && (
           <div className="bg-gray-200 text-gray-800 p-6 rounded-lg mb-8 shadow-md">
             <h2 className="text-2xl font-semibold mb-4">Order Summary</h2>
             <ul className="space-y-2">
@@ -114,7 +115,6 @@ const Payment = () => {
             </ul>
           </div>
         )}
-
         {showForm && (
           <form onSubmit={handlePayment} className="space-y-6">
             <div className="flex items-center mb-4">
@@ -169,7 +169,6 @@ const Payment = () => {
             </button>
           </form>
         )}
-
         {!showForm && (
           <div className="flex flex-col items-center mt-6 space-y-4">
             <Button
@@ -181,7 +180,6 @@ const Payment = () => {
             </Button>
           </div>
         )}
-
         <div
           id={payOSConfig.ELEMENT_ID}
           className={
