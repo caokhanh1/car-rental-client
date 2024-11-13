@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import Modal from "react-modal";
 import useAxios from "../utils/useAxios";
 import { toast } from "react-toastify";
 import { FaCar } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { MdOutlineKeyboardReturn } from "react-icons/md";
+import axios from "axios";
+import { Button, Label } from "flowbite-react";
+import ModalReactModal from "react-modal";
+import { Modal as ModalFlowbite } from "flowbite-react";
 
 const OrderHistory = () => {
   const api = useAxios();
@@ -15,6 +19,8 @@ const OrderHistory = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [conditionImagesOpen, setConditionImagesOpen] = useState(false);
+  const [showModalUpdateOrder, setShowModalUpdateOrder] = useState(false);
+  const [uploading, setUploading] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
@@ -26,6 +32,7 @@ const OrderHistory = () => {
     New: "New",
     PendingConfirm: "Pending",
     OrderSuccess: "Order",
+    PendingReturn: "Pending Return",
     Returning: "Returning",
     ReturnSuccess: "Completed",
     Canceled: "Canceled",
@@ -141,6 +148,99 @@ const OrderHistory = () => {
     }
   };
 
+  const confirmReturnOrder = async (orderId) => {
+    try {
+      const { data, status } = await api.put(`/users/orders/${orderId}/pay`);
+      if (status === 200) {
+        navigate("/payment", {
+          state: { checkoutUrl: data.checkoutURL, orderId },
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to confirm return order");
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files.length) return;
+
+    setUploading(true);
+
+    const imageUrls = [];
+    for (let file of files) {
+      const fileFormData = new FormData();
+      fileFormData.append("file", file);
+      fileFormData.append(
+        "upload_preset",
+        import.meta.env.VITE_APP_CLOUDINARY_UPLOAD_PRESET
+      );
+      fileFormData.append(
+        "cloud_name",
+        import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+      );
+      fileFormData.append("folder", "Cloudinary-React");
+
+      try {
+        const res = await axios.post(
+          `https://api.cloudinary.com/v1_1/${
+            import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+          }/image/upload`,
+          fileFormData
+        );
+        const imageUrl = res.data.secure_url;
+        imageUrls.push(imageUrl);
+      } catch (error) {
+        console.error("Error uploading the image:", error);
+        toast.error("Failed to upload one or more images.");
+      }
+    }
+
+    setUploading(false);
+
+    // Update the selectedOrder with the new images
+    setSelectedOrder((prevOrder) => ({
+      ...prevOrder,
+      images: [...(prevOrder.images || []), ...imageUrls],
+    }));
+  };
+
+  const handleCloseModalUpdateOrder = () => {
+    setShowModalUpdateOrder(false);
+  };
+
+  const handleOpenModalUpdateOrder = (order) => {
+    console.log(order);
+    setSelectedOrder(order);
+    setShowModalUpdateOrder(true);
+  };
+
+  const handleUpdateOrder = async () => {
+    try {
+      const { status } = await api.put(
+        `/users/orders/${selectedOrder.id}/return`,
+        {
+          images: selectedOrder.images,
+        }
+      );
+
+      if (status === 200) {
+        setOrders((prevRequests) =>
+          prevRequests.map((request) =>
+            request.id === selectedOrder.id
+              ? { ...request, status: "pendingReturn" }
+              : request
+          )
+        );
+
+        handleCloseModalUpdateOrder();
+        toast.success("Return car successfully!");
+      }
+    } catch (error) {
+      toast.error("Failed to update the order.");
+    }
+  };
+
   if (initialLoad) return <div>Loading...</div>;
 
   return (
@@ -233,12 +333,24 @@ const OrderHistory = () => {
                     </span>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                    <button
-                      className="bg-[#334155] text-white p-3 rounded-full hover:bg-gray-700 transition-colors mx-auto flex items-center justify-center"
-                      onClick={() => openModal(order)}
-                    >
-                      <FiEye size={12} />
-                    </button>
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        className="bg-[#334155] text-white p-4 rounded-full hover:bg-gray-700 transition-colors flex items-center justify-center"
+                        onClick={() => openModal(order)}
+                      >
+                        <FiEye size={12} />
+                      </button>
+
+                      {order.status === "OrderSuccess" && (
+                        <button
+                          onClick={() => handleOpenModalUpdateOrder(order)}
+                          className="bg-[#334155] text-white p-3 rounded-full hover:bg-gray-800 transition-transform duration-300 transform hover:scale-105 flex items-center justify-center"
+                          title="Return Car"
+                        >
+                          <MdOutlineKeyboardReturn className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -281,7 +393,7 @@ const OrderHistory = () => {
       </div>
 
       {/* Modal for Order Details */}
-      <Modal
+      <ModalReactModal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Order Details"
@@ -405,14 +517,11 @@ const OrderHistory = () => {
                   </>
                 )}
 
-                {selectedOrder.status === "OrderSuccess" && (
-                  <button className="bg-[#334155] text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
-                    Return Car
-                  </button>
-                )}
-
                 {selectedOrder.status === "Returning" && (
-                  <button className="bg-[#334155] text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+                  <button
+                    onClick={() => confirmReturnOrder(selectedOrder.id)}
+                    className="bg-[#334155] text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                  >
                     Confirm Return
                   </button>
                 )}
@@ -420,10 +529,10 @@ const OrderHistory = () => {
             </div>
           )}
         </div>
-      </Modal>
+      </ModalReactModal>
 
       {/* Modal for Car Condition Images */}
-      <Modal
+      <ModalReactModal
         isOpen={conditionImagesOpen}
         onRequestClose={closeConditionImages}
         contentLabel="Car Condition Images"
@@ -465,7 +574,54 @@ const OrderHistory = () => {
               ))}
           </div>
         </div>
-      </Modal>
+      </ModalReactModal>
+
+      {showModalUpdateOrder && (
+        <ModalFlowbite
+          show={showModalUpdateOrder}
+          onClose={handleCloseModalUpdateOrder}
+        >
+          <ModalFlowbite.Header>Return order</ModalFlowbite.Header>
+          <ModalFlowbite.Body>
+            <div className="space-y-6">
+              <div>
+                <Label value="Upload Vehicle Images" />
+                <div className="mt-2 flex items-center">
+                  <input
+                    type="file"
+                    id="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileUpload}
+                    className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
+                  />
+                </div>
+                {uploading && (
+                  <p className="text-blue-500 mt-2">Uploading images...</p>
+                )}
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {selectedOrder?.images?.map((imageUrl, index) => (
+                    <img
+                      key={index}
+                      src={imageUrl}
+                      alt={`Vehicle ${index + 1}`}
+                      className="w-32 h-32 object-cover rounded-md border"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </ModalFlowbite.Body>
+          <ModalFlowbite.Footer>
+            <Button onClick={handleUpdateOrder} color="dark">
+              Confirm
+            </Button>
+            <Button onClick={handleCloseModalUpdateOrder} color="gray">
+              Cancel
+            </Button>
+          </ModalFlowbite.Footer>
+        </ModalFlowbite>
+      )}
     </div>
   );
 };
