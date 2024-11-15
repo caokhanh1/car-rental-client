@@ -5,8 +5,12 @@ import useAxios from "../../utils/useAxios";
 import { HiCheckCircle, HiXCircle, HiEye } from "react-icons/hi";
 
 import { FaCar } from "react-icons/fa";
-import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { Button, Label, TextInput } from "flowbite-react";
+import ModalReactModal from "react-modal";
+import { Modal as ModalFlowbite } from "flowbite-react";
 import axios from "axios";
+
+ModalReactModal.setAppElement("#root");
 
 const DashRentalRequest = () => {
   const api = useAxios();
@@ -21,11 +25,13 @@ const DashRentalRequest = () => {
   const [currentUser, setCurrentUser] = useState({});
   const [currentCar, setCurrentCar] = useState({});
   const [uploading, setUploading] = useState(false);
+  const [conditionImagesOpen, setConditionImagesOpen] = useState(false);
   const statusLabels = {
     all: "All",
     New: "New",
     PendingConfirm: "Pending",
     OrderSuccess: "Order",
+    PendingReturn: "Pending Return",
     Returning: "Returning",
     ReturnSuccess: "Completed",
     Canceled: "Canceled",
@@ -126,6 +132,15 @@ const DashRentalRequest = () => {
     setShowModalUpdateOrder(false);
   };
 
+  const openConditionImages = (order) => {
+    setSelectedOrder(order);
+    setConditionImagesOpen(true);
+  };
+
+  const closeConditionImages = () => {
+    setConditionImagesOpen(false);
+  };
+
   const handleUpdateOrder = async () => {
     try {
       const { status } = await api.put(`/admins/orders/${selectedOrder.id}`, {
@@ -149,6 +164,24 @@ const DashRentalRequest = () => {
     }
   };
 
+  const confirmReturn = async (orderId) => {
+    try {
+      const { status } = await api.put(
+        `/admins/orders/${orderId}/confirm-return`
+      );
+      if (status !== 200) {
+        toast.success("Confirm return successfully");
+        selectedOrder((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId ? { ...order, status: "Returning" } : order
+          )
+        );
+      }
+    } catch (error) {
+      toast.error("Failed to cancel order");
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 sm:px-8 mt-6">
       <div className="py-8">
@@ -166,6 +199,7 @@ const DashRentalRequest = () => {
               <option value="New">New</option>
               <option value="PendingApproval">Pending</option>
               <option value="OrderSuccess">Order</option>
+              <option value="PendingReturn">Pending Return</option>
               <option value="Returning">Returning</option>
               <option value="ReturnSuccess">Completed</option>
             </select>
@@ -303,13 +337,25 @@ const DashRentalRequest = () => {
                               }
                             />
                           )}
+                          {request.status === "PendingReturn" && (
+                            <HiCheckCircle
+                              className="w-6 h-6 text-green-500 cursor-pointer hover:opacity-80"
+                              onClick={() => confirmReturn(request.id)}
+                            />
+                          )}
                           <HiXCircle
                             className="w-6 h-6 text-red-500 cursor-pointer hover:opacity-80"
                             onClick={() => console.log("Reject", request.id)}
                           />
                           <HiEye
                             className="w-6 h-6 text-blue-500 cursor-pointer hover:opacity-80"
-                            onClick={() => console.log("View", request.id)}
+                            onClick={() => {
+                              if (request.status === "PendingReturn") {
+                                openConditionImages(request);
+                              } else {
+                                console.log("View", request.id);
+                              }
+                            }}
                           />
                         </div>
                       </td>
@@ -323,9 +369,9 @@ const DashRentalRequest = () => {
       </div>
 
       {showModalUser && (
-        <Modal show={showModalUser} onClose={handleCloseModalUser}>
-          <Modal.Header>User order information</Modal.Header>
-          <Modal.Body>
+        <ModalFlowbite show={showModalUser} onClose={handleCloseModalUser}>
+          <ModalFlowbite.Header>User order information</ModalFlowbite.Header>
+          <ModalFlowbite.Body>
             <div className="space-y-6">
               <div>
                 <Label htmlFor="name" value="Name" />
@@ -355,14 +401,14 @@ const DashRentalRequest = () => {
                 />
               </div>
             </div>
-          </Modal.Body>
-        </Modal>
+          </ModalFlowbite.Body>
+        </ModalFlowbite>
       )}
 
       {showModalCar && (
-        <Modal show={showModalCar} onClose={handleCloseModalCar}>
-          <Modal.Header>Car order information</Modal.Header>
-          <Modal.Body>
+        <ModalFlowbite show={showModalCar} onClose={handleCloseModalCar}>
+          <ModalFlowbite.Header>Car order information</ModalFlowbite.Header>
+          <ModalFlowbite.Body>
             <div className="space-y-6">
               <div>
                 <Label htmlFor="name" value="Name" />
@@ -427,17 +473,17 @@ const DashRentalRequest = () => {
                 />
               </div>
             </div>
-          </Modal.Body>
-        </Modal>
+          </ModalFlowbite.Body>
+        </ModalFlowbite>
       )}
 
       {showModalUpdateOrder && (
-        <Modal
+        <ModalFlowbite
           show={showModalUpdateOrder}
           onClose={handleCloseModalUpdateOrder}
         >
-          <Modal.Header>Confirm order</Modal.Header>
-          <Modal.Body>
+          <ModalFlowbite.Header>Confirm order</ModalFlowbite.Header>
+          <ModalFlowbite.Body>
             <div className="space-y-6">
               <div>
                 <Label value="Upload Vehicle Images" />
@@ -466,17 +512,63 @@ const DashRentalRequest = () => {
                 </div>
               </div>
             </div>
-          </Modal.Body>
-          <Modal.Footer>
+          </ModalFlowbite.Body>
+          <ModalFlowbite.Footer>
             <Button onClick={handleUpdateOrder} color="dark">
               Confirm
             </Button>
             <Button onClick={handleCloseModalUpdateOrder} color="gray">
               Cancel
             </Button>
-          </Modal.Footer>
-        </Modal>
+          </ModalFlowbite.Footer>
+        </ModalFlowbite>
       )}
+
+      <ModalReactModal
+        isOpen={conditionImagesOpen}
+        onRequestClose={closeConditionImages}
+        contentLabel="Car Condition Images"
+        className="fixed inset-0 flex items-center justify-center z-50"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+      >
+        <div className="bg-white w-full h-full p-8 relative overflow-y-auto">
+          <button
+            onClick={closeConditionImages}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          >
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+          <h2 className="text-3xl font-semibold mb-6 text-center">
+            Car Condition Images
+          </h2>
+          <div className="grid grid-cols-2 gap-6">
+            {selectedOrder &&
+              selectedOrder.image
+                ?.filter((img) => img.type === "Return")
+                .map((img, index) => (
+                  <img
+                    key={index}
+                    src={img.imageURL}
+                    alt={`Condition ${index + 1}`}
+                    className="w-full h-60 object-cover rounded-lg"
+                  />
+                ))}
+          </div>
+        </div>
+      </ModalReactModal>
     </div>
   );
 };
