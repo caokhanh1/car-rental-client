@@ -19,6 +19,7 @@ const BookingPage = () => {
   const [selectedCoupon, setSelectedCoupon] = useState("");
   const [drivingOption, setDrivingOption] = useState("withDriver");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -61,6 +62,7 @@ const BookingPage = () => {
 
   const handleBooking = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       if (new Date(returnDate) <= new Date(pickupDate)) {
         toast.warn(
@@ -96,9 +98,11 @@ const BookingPage = () => {
         });
       } else {
         toast.error("Failed to book car");
+        setIsSubmitting(false);
       }
     } catch (error) {
       toast.error("Failed to book car");
+      setIsSubmitting(false);
     }
   };
 
@@ -326,7 +330,11 @@ const BookingPage = () => {
               className={`w-full py-3 mt-6 rounded-lg shadow-md transition-colors duration-300 ${
                 !user.isActive
                   ? "bg-gray-400 text-white cursor-not-allowed"
-                  : car.isInUse || !termsAccepted || !pickupDate || !returnDate
+                  : car.isInUse ||
+                    !termsAccepted ||
+                    !pickupDate ||
+                    !returnDate ||
+                    isSubmitting
                   ? "bg-gray-400 text-white cursor-not-allowed"
                   : "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white hover:from-yellow-600 hover:to-yellow-700"
               }`}
@@ -335,10 +343,13 @@ const BookingPage = () => {
                 car?.isInUse ||
                 !termsAccepted ||
                 !pickupDate ||
-                !returnDate
+                !returnDate ||
+                isSubmitting
               }
             >
-              {!user.isActive
+              {isSubmitting
+                ? "Processing..."
+                : !user.isActive
                 ? "Account Not Activated"
                 : car.isInUse
                 ? "Currently Booked"

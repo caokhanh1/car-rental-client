@@ -9,6 +9,10 @@ import axios from "axios";
 import { Button, Label } from "flowbite-react";
 import ModalReactModal from "react-modal";
 import { Modal as ModalFlowbite } from "flowbite-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 const OrderHistory = () => {
   const api = useAxios();
@@ -228,7 +232,7 @@ const OrderHistory = () => {
         setOrders((prevRequests) =>
           prevRequests.map((request) =>
             request.id === selectedOrder.id
-              ? { ...request, status: "pendingReturn" }
+              ? { ...request, status: "PendingReturn" }
               : request
           )
         );
@@ -245,117 +249,138 @@ const OrderHistory = () => {
 
   return (
     <div className="p-8 mx-28 bg-white">
-      <h2 className="text-2xl font-bold mb-6">Order History</h2>
-      <div className="flex justify-center space-x-6 mb-4 text-gray-600">
-        {Object.entries(statusLabels).map(([status, label]) => (
-          <button
-            key={status}
-            className={`${
-              filter === status ? "text-indigo-600 font-semibold" : ""
-            }`}
-            onClick={() => setFilter(status)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <div className="bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 rounded-lg shadow-md">
+        {/* Tiêu đề */}
+        <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
+          Order History
+        </h2>
 
-      <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-        <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-          <table className="min-w-full leading-normal">
-            <thead>
-              <tr>
-                <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
-                  Image
-                </th>
-                <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
-                  Name
-                </th>
-                <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
-                  Rental Start
-                </th>
-                <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
-                  Rental End
-                </th>
-                <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
-                  Total Cost
-                </th>
-                <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
-                  Status
-                </th>
-                <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentOrders.map((order) => (
-                <tr key={order.id}>
-                  <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                    <img
-                      src={
-                        order?.carOrder[0]?.car?.imageURL ||
-                        "https://via.placeholder.com/150"
-                      }
-                      alt={order.carOrder[0]?.car?.name || "Unknown Car"}
-                      className="w-16 h-16 rounded object-cover mx-auto"
-                    />
-                  </td>
-                  <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                    {order.carOrder[0]?.car?.name || "Unknown Car"}
-                  </td>
-                  <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                    {new Date(order.carOrder[0]?.startDate).toLocaleString()}
-                  </td>
-                  <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                    {new Date(order.carOrder[0]?.endDate).toLocaleString()}
-                  </td>
-                  <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                    {order.cost} VND
-                  </td>
-                  <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-                        order.status === "PendingApproval"
-                          ? "bg-orange-100 text-orange-700"
-                          : order.status === "OrderSuccess"
-                          ? "bg-green-100 text-green-700"
-                          : order.status === "Returning"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : order.status === "ReturnSuccess"
-                          ? "bg-blue-100 text-blue-700"
-                          : order.status === "New"
-                          ? "bg-gray-100 text-gray-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
+        {/* Bộ lọc trạng thái */}
+        <div className="flex justify-center space-x-4 mb-6">
+          {Object.entries(statusLabels).map(([status, label]) => (
+            <button
+              key={status}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                filter === status
+                  ? "bg-indigo-600 text-white shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              } transition`}
+              onClick={() => setFilter(status)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Bảng */}
+        <div className="overflow-x-auto">
+          <div className="min-w-full bg-white rounded-lg shadow-md">
+            <table className="min-w-full">
+              {/* Header */}
+              <thead>
+                <tr className="bg-gray-100">
+                  {[
+                    "Image",
+                    "Name",
+                    "Rental Start",
+                    "Rental End",
+                    "Total Cost",
+                    "Status",
+                    "Actions",
+                  ].map((header) => (
+                    <th
+                      key={header}
+                      className="px-6 py-4 text-center text-sm font-bold text-gray-600 uppercase tracking-wider"
                     >
-                      {statusLabels[order.status] || "Unknown"}
-                    </span>
-                  </td>
-                  <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                    <div className="flex justify-center space-x-2">
-                      <button
-                        className="bg-[#334155] text-white p-4 rounded-full hover:bg-gray-700 transition-colors flex items-center justify-center"
-                        onClick={() => openModal(order)}
-                      >
-                        <FiEye size={12} />
-                      </button>
-
-                      {order.status === "OrderSuccess" && (
-                        <button
-                          onClick={() => handleOpenModalUpdateOrder(order)}
-                          className="bg-[#334155] text-white p-3 rounded-full hover:bg-gray-800 transition-transform duration-300 transform hover:scale-105 flex items-center justify-center"
-                          title="Return Car"
-                        >
-                          <MdOutlineKeyboardReturn className="w-5 h-5" />
-                        </button>
-                      )}
-                    </div>
-                  </td>
+                      {header}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              {/* Body */}
+              <tbody>
+                {currentOrders.map((order) => (
+                  <tr key={order.id} className="hover:bg-gray-50 transition">
+                    {/* Image */}
+                    <td className="px-6 py-4 text-center">
+                      <img
+                        src={
+                          order?.carOrder[0]?.car?.imageURL ||
+                          "https://via.placeholder.com/150"
+                        }
+                        alt={order.carOrder[0]?.car?.name || "Unknown Car"}
+                        className="w-16 h-16 rounded-lg object-cover shadow"
+                      />
+                    </td>
+
+                    {/* Name */}
+                    <td className="px-6 py-4 text-center font-medium text-gray-800">
+                      {order.carOrder[0]?.car?.name || "Unknown Car"}
+                    </td>
+
+                    {/* Rental Start */}
+                    <td className="px-6 py-4 text-center text-gray-600">
+                      {new Date(order.carOrder[0]?.startDate).toLocaleString()}
+                    </td>
+
+                    {/* Rental End */}
+                    <td className="px-6 py-4 text-center text-gray-600">
+                      {new Date(order.carOrder[0]?.endDate).toLocaleString()}
+                    </td>
+
+                    {/* Total Cost */}
+                    <td className="px-6 py-4 text-center font-medium text-gray-800">
+                      {order.cost} VND
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-6 py-4 text-center">
+                      <span
+                        className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${
+                          order.status === "PendingReturn"
+                            ? "bg-red-100 text-red-700"
+                            : order.status === "OrderSuccess"
+                            ? "bg-green-100 text-green-700"
+                            : order.status === "Returning"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : order.status === "Completed"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {statusLabels[order.status] || "Unknown"}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex justify-center space-x-2">
+                        {/* View Button */}
+                        <button
+                          className="bg-gray-100 text-gray-600 p-2 rounded-full shadow hover:bg-gray-200 transition"
+                          onClick={() => openModal(order)}
+                        >
+                          <FiEye size={16} />
+                        </button>
+
+                        {/* Return Button */}
+                        {order.status === "OrderSuccess" && (
+                          <button
+                            onClick={() => handleOpenModalUpdateOrder(order)}
+                            className="bg-indigo-600 text-white p-2 rounded-full shadow hover:bg-indigo-700 transition"
+                            title="Return Car"
+                          >
+                            <MdOutlineKeyboardReturn size={20} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -421,10 +446,13 @@ const OrderHistory = () => {
           </button>
 
           {selectedOrder && (
-            <div className="space-y-8">
-              <h2 className="text-2xl font-semibold mb-6 text-center">
+            <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-lg">
+              {/* Title */}
+              <h2 className="text-2xl font-bold text-gray-800 text-center border-b pb-4">
                 Order Summary
               </h2>
+
+              {/* Order Details */}
               <div className="flex items-center justify-between border-b pb-4">
                 <div className="flex items-center space-x-4">
                   <img
@@ -433,27 +461,40 @@ const OrderHistory = () => {
                       "https://via.placeholder.com/150"
                     }
                     alt={selectedOrder.carOrder[0]?.car?.name || "Unknown Car"}
-                    className="w-16 h-16 rounded object-cover"
+                    className="w-20 h-20 rounded-lg object-cover shadow"
                   />
                   <div>
-                    <h3 className="font-medium text-gray-800">
+                    <h3 className="font-semibold text-lg text-gray-900">
                       {selectedOrder.carOrder[0]?.car?.name || "Unknown Car"}
                     </h3>
-                  </div>
-                  {selectedOrder.status !== "New" && (
-                    <div className="flex items-center justify-center">
-                      <button
-                        className="bg-[#334155] text-white p-2 rounded-full shadow-sm flex items-center justify-center transition-transform duration-300 hover:scale-105"
-                        onClick={openConditionImages}
+                    <p className="text-sm text-gray-500">
+                      Status:{" "}
+                      <span
+                        className={`${
+                          selectedOrder.status === "New"
+                            ? "text-blue-500"
+                            : selectedOrder.status === "PendingConfirm"
+                            ? "text-yellow-500"
+                            : "text-green-500"
+                        } font-semibold`}
                       >
-                        <FaCar className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
+                        {selectedOrder.status}
+                      </span>
+                    </p>
+                  </div>
                 </div>
+                {selectedOrder.status !== "New" && (
+                  <button
+                    className="bg-gray-100 text-gray-600 p-3 rounded-full shadow hover:bg-gray-200 hover:scale-105 transition-transform"
+                    onClick={openConditionImages}
+                  >
+                    <FaCar className="w-5 h-5" />
+                  </button>
+                )}
               </div>
 
-              <div className="space-y-4">
+              {/* Rental Details */}
+              <div className="space-y-4 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Rental start:</span>
                   <span className="font-semibold text-gray-800">
@@ -476,25 +517,26 @@ const OrderHistory = () => {
                     {selectedOrder.cost} VND
                   </span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between border-t pt-4">
                   <span className="text-gray-800 font-semibold">Total:</span>
                   <span className="text-xl font-bold text-gray-800">
                     {selectedOrder.cost} VND
                   </span>
                 </div>
-              </div>
-              <div className="flex justify-between mt-4">
-                <span className="text-gray-500">Deposit Amount:</span>
-                <span className="font-semibold text-gray-800">
-                  {selectedOrder.deposit} VND
-                </span>
+                <div className="flex justify-between border-t pt-4">
+                  <span className="text-gray-500">Deposit Amount:</span>
+                  <span className="font-semibold text-gray-800">
+                    {selectedOrder.deposit} VND
+                  </span>
+                </div>
               </div>
 
+              {/* Action Buttons */}
               <div className="flex justify-end space-x-4 mt-6">
                 {selectedOrder.status === "New" && (
                   <button
                     onClick={() => withdrawOrder(selectedOrder.id)}
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
                   >
                     Withdraw Order
                   </button>
@@ -504,13 +546,13 @@ const OrderHistory = () => {
                   <>
                     <button
                       onClick={() => withdrawOrder(selectedOrder.id)}
-                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
+                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
                     >
                       Withdraw Order
                     </button>
                     <button
                       onClick={() => confirmOrder(selectedOrder.id)}
-                      className="bg-[#334155] text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                     >
                       Confirm Order
                     </button>
@@ -520,7 +562,7 @@ const OrderHistory = () => {
                 {selectedOrder.status === "Returning" && (
                   <button
                     onClick={() => confirmReturnOrder(selectedOrder.id)}
-                    className="bg-[#334155] text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
                   >
                     Confirm Return
                   </button>
@@ -535,17 +577,18 @@ const OrderHistory = () => {
       <ModalReactModal
         isOpen={conditionImagesOpen}
         onRequestClose={closeConditionImages}
-        contentLabel="Car Condition Images"
+        contentLabel="Car Condition"
         className="fixed inset-0 flex items-center justify-center z-50"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
       >
-        <div className="bg-white w-full h-full p-8 relative overflow-y-auto">
+        <div className="bg-white w-full max-w-4xl p-6 relative overflow-y-auto rounded-lg shadow-lg">
+          {/* Close Button */}
           <button
             onClick={closeConditionImages}
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
           >
             <svg
-              className="w-8 h-8"
+              className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -559,20 +602,42 @@ const OrderHistory = () => {
               ></path>
             </svg>
           </button>
-          <h2 className="text-3xl font-semibold mb-6 text-center">
-            Car Condition Images
+
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
+            Vehicle Condition
           </h2>
-          <div className="grid grid-cols-2 gap-6">
-            {selectedOrder &&
-              selectedOrder.images?.map((imgUrl, index) => (
-                <img
-                  key={index}
-                  src={imgUrl}
-                  alt={`Condition ${index + 1}`}
-                  className="w-full h-60 object-cover rounded-lg"
-                />
-              ))}
-          </div>
+          <p className="text-sm text-gray-600 text-center mb-4">
+            Inspect the car’s condition through the images below.
+          </p>
+
+          {/* Swiper Carousel */}
+          {selectedOrder && selectedOrder.image?.length > 0 ? (
+            <Swiper
+              modules={[Navigation]}
+              navigation
+              spaceBetween={20}
+              slidesPerView={1}
+              className="w-full h-[400px] rounded-lg"
+            >
+              {selectedOrder.image
+                ?.filter((img) => img.type === "Confirm")
+                .map((img, index) => (
+                  <SwiperSlide
+                    key={index}
+                    className="flex justify-center items-center"
+                  >
+                    <img
+                      src={img.imageURL}
+                      alt={`Condition ${index + 1}`}
+                      className="max-w-[90%] max-h-[90%] object-contain rounded-lg shadow"
+                    />
+                  </SwiperSlide>
+                ))}
+            </Swiper>
+          ) : (
+            <p className="text-gray-500 text-center">No images available</p>
+          )}
         </div>
       </ModalReactModal>
 
