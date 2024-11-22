@@ -48,7 +48,7 @@ const DashRentalRequest = () => {
     OrderSuccess: "Order",
     PendingReturn: "Pending Return",
     Returning: "Returning",
-    ReturnSuccess: "Completed",
+    Success: "Completed",
     Canceled: "Canceled",
   };
 
@@ -274,7 +274,7 @@ const DashRentalRequest = () => {
               <option value="OrderSuccess">Order</option>
               <option value="PendingReturn">Pending Return</option>
               <option value="Returning">Returning</option>
-              <option value="ReturnSuccess">Completed</option>
+              <option value="Success">Completed</option>
             </select>
             <input
               type="text"
@@ -368,7 +368,7 @@ const DashRentalRequest = () => {
                               ? "bg-green-100 text-green-700"
                               : request.status === "Returning"
                               ? "bg-yellow-100 text-yellow-700"
-                              : request.status === "ReturnSuccess"
+                              : request.status === "Success"
                               ? "bg-blue-100 text-blue-700"
                               : request.status === "New"
                               ? "bg-gray-100 text-gray-700"

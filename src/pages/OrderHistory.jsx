@@ -50,7 +50,7 @@ const OrderHistory = () => {
     OrderSuccess: "Order",
     PendingReturn: "Pending Return",
     Returning: "Returning",
-    ReturnSuccess: "Completed",
+    Success: "Completed",
     Canceled: "Canceled",
   };
 

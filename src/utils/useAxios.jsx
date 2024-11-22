@@ -4,6 +4,8 @@ import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const baseURL = import.meta.env.VITE_APP_API_URL;
+console.log(baseURL, "-");
+
 
 const useAxios = () => {
   const { authTokens, setUser, setAuthTokens } = useContext(AuthContext);
