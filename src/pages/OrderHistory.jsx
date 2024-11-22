@@ -29,6 +29,18 @@ const OrderHistory = () => {
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
   const navigate = useNavigate();
+  const [contractModalOpen, setContractModalOpen] = useState(false);
+  const [selectedContract, setSelectedContract] = useState(null);
+
+  const openContractModal = (order) => {
+    setSelectedContract(order.contract);
+    setContractModalOpen(true);
+  };
+
+  const closeContractModal = () => {
+    setSelectedContract(null);
+    setContractModalOpen(false);
+  };
 
   // Status Labels
   const statusLabels = {
@@ -249,22 +261,22 @@ const OrderHistory = () => {
 
   return (
     <div className="p-8 mx-28 bg-white">
-      <div className="bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 rounded-lg shadow-md">
-        {/* Tiêu đề */}
-        <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
+      <div className="bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 rounded-lg shadow-lg mb-12">
+        {/* Căn giữa và làm nổi bật tiêu đề */}
+        <h2 className="text-4xl font-extrabold text-gray-900 text-center mb-12">
           Order History
         </h2>
 
-        {/* Bộ lọc trạng thái */}
-        <div className="flex justify-center space-x-4 mb-6">
+        {/* Nút filter */}
+        <div className="flex justify-center gap-4 mb-8">
           {Object.entries(statusLabels).map(([status, label]) => (
             <button
               key={status}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              className={`px-5 py-3 rounded-lg text-sm font-medium ${
                 filter === status
-                  ? "bg-indigo-600 text-white shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              } transition`}
+                  ? "bg-gray-800 text-white shadow-lg"
+                  : "bg-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              }`}
               onClick={() => setFilter(status)}
             >
               {label}
@@ -274,11 +286,10 @@ const OrderHistory = () => {
 
         {/* Bảng */}
         <div className="overflow-x-auto">
-          <div className="min-w-full bg-white rounded-lg shadow-md">
-            <table className="min-w-full">
-              {/* Header */}
-              <thead>
-                <tr className="bg-gray-100">
+          <div className="min-w-full bg-white rounded-lg shadow-md border border-gray-200">
+            <table className="table-auto w-full border-collapse">
+              <thead className="bg-gray-100">
+                <tr>
                   {[
                     "Image",
                     "Name",
@@ -286,24 +297,28 @@ const OrderHistory = () => {
                     "Rental End",
                     "Total Cost",
                     "Status",
+                    "Contract",
                     "Actions",
                   ].map((header) => (
                     <th
                       key={header}
-                      className="px-6 py-4 text-center text-sm font-bold text-gray-600 uppercase tracking-wider"
+                      className="px-4 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider border-b border-gray-200 text-center"
                     >
                       {header}
                     </th>
                   ))}
                 </tr>
               </thead>
-
-              {/* Body */}
               <tbody>
-                {currentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50 transition">
+                {currentOrders.map((order, index) => (
+                  <tr
+                    key={order.id}
+                    className={`${
+                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } hover:bg-gray-100 transition`}
+                  >
                     {/* Image */}
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-4 py-2 text-center border-b border-gray-200">
                       <img
                         src={
                           order?.carOrder[0]?.car?.imageURL ||
@@ -313,29 +328,24 @@ const OrderHistory = () => {
                         className="w-16 h-16 rounded-lg object-cover shadow"
                       />
                     </td>
-
                     {/* Name */}
-                    <td className="px-6 py-4 text-center font-medium text-gray-800">
+                    <td className="px-4 py-2 text-center font-medium text-gray-800 border-b border-gray-200">
                       {order.carOrder[0]?.car?.name || "Unknown Car"}
                     </td>
-
                     {/* Rental Start */}
-                    <td className="px-6 py-4 text-center text-gray-600">
+                    <td className="px-4 py-2 text-center text-gray-600 border-b border-gray-200">
                       {new Date(order.carOrder[0]?.startDate).toLocaleString()}
                     </td>
-
                     {/* Rental End */}
-                    <td className="px-6 py-4 text-center text-gray-600">
+                    <td className="px-4 py-2 text-center text-gray-600 border-b border-gray-200">
                       {new Date(order.carOrder[0]?.endDate).toLocaleString()}
                     </td>
-
                     {/* Total Cost */}
-                    <td className="px-6 py-4 text-center font-medium text-gray-800">
+                    <td className="px-4 py-2 text-center font-medium text-gray-800 border-b border-gray-200">
                       {order.cost} VND
                     </td>
-
                     {/* Status */}
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-4 py-2 text-center border-b border-gray-200">
                       <span
                         className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${
                           order.status === "PendingReturn"
@@ -352,23 +362,32 @@ const OrderHistory = () => {
                         {statusLabels[order.status] || "Unknown"}
                       </span>
                     </td>
-
-                    {/* Actions */}
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex justify-center space-x-2">
-                        {/* View Button */}
+                    {/* Contract */}
+                    <td className="px-4 py-2 text-center border-b border-gray-200">
+                      {order.contract ? (
                         <button
-                          className="bg-gray-100 text-gray-600 p-2 rounded-full shadow hover:bg-gray-200 transition"
+                          className="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-white transition"
+                          onClick={() => openContractModal(order)}
+                        >
+                          View
+                        </button>
+                      ) : (
+                        <span className="text-gray-500">No Contract</span>
+                      )}
+                    </td>
+                    {/* Actions */}
+                    <td className="px-4 py-2 text-center border-b border-gray-200">
+                      <div className="flex justify-center space-x-2">
+                        <button
+                          className="bg-gray-700 text-gray-300 p-2 rounded-full shadow hover:bg-gray-800 hover:text-white transition"
                           onClick={() => openModal(order)}
                         >
                           <FiEye size={16} />
                         </button>
-
-                        {/* Return Button */}
                         {order.status === "OrderSuccess" && (
                           <button
                             onClick={() => handleOpenModalUpdateOrder(order)}
-                            className="bg-indigo-600 text-white p-2 rounded-full shadow hover:bg-indigo-700 transition"
+                            className="bg-gray-700 text-gray-300 p-2 rounded-full shadow hover:bg-gray-800 hover:text-white transition"
                             title="Return Car"
                           >
                             <MdOutlineKeyboardReturn size={20} />
@@ -384,12 +403,11 @@ const OrderHistory = () => {
         </div>
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-12">
         {startPage > 0 && (
           <button
             onClick={prevPageGroup}
-            className="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700"
+            className="px-4 py-2 mx-1 rounded bg-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
           >
             &laquo;
           </button>
@@ -400,8 +418,8 @@ const OrderHistory = () => {
             onClick={() => paginate(pageNumber)}
             className={`px-4 py-2 mx-1 rounded ${
               currentPage === pageNumber
-                ? "bg-indigo-600 text-white"
-                : "bg-gray-200 text-gray-700"
+                ? "bg-gray-800 text-white"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
             }`}
           >
             {pageNumber}
@@ -410,14 +428,13 @@ const OrderHistory = () => {
         {endPage < totalPages && (
           <button
             onClick={nextPageGroup}
-            className="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700"
+            className="px-4 py-2 mx-1 rounded bg-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
           >
             &raquo;
           </button>
         )}
       </div>
 
-      {/* Modal for Order Details */}
       <ModalReactModal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -447,12 +464,10 @@ const OrderHistory = () => {
 
           {selectedOrder && (
             <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-lg">
-              {/* Title */}
               <h2 className="text-2xl font-bold text-gray-800 text-center border-b pb-4">
                 Order Summary
               </h2>
 
-              {/* Order Details */}
               <div className="flex items-center justify-between border-b pb-4">
                 <div className="flex items-center space-x-4">
                   <img
@@ -493,7 +508,6 @@ const OrderHistory = () => {
                 )}
               </div>
 
-              {/* Rental Details */}
               <div className="space-y-4 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Rental start:</span>
@@ -531,12 +545,11 @@ const OrderHistory = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex justify-end space-x-4 mt-6">
                 {selectedOrder.status === "New" && (
                   <button
                     onClick={() => withdrawOrder(selectedOrder.id)}
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+                    className="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-white transition"
                   >
                     Withdraw Order
                   </button>
@@ -546,13 +559,13 @@ const OrderHistory = () => {
                   <>
                     <button
                       onClick={() => withdrawOrder(selectedOrder.id)}
-                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+                      className="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-white transition"
                     >
                       Withdraw Order
                     </button>
                     <button
                       onClick={() => confirmOrder(selectedOrder.id)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                      className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
                     >
                       Confirm Order
                     </button>
@@ -562,7 +575,7 @@ const OrderHistory = () => {
                 {selectedOrder.status === "Returning" && (
                   <button
                     onClick={() => confirmReturnOrder(selectedOrder.id)}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                    className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
                   >
                     Confirm Return
                   </button>
@@ -573,7 +586,6 @@ const OrderHistory = () => {
         </div>
       </ModalReactModal>
 
-      {/* Modal for Car Condition Images */}
       <ModalReactModal
         isOpen={conditionImagesOpen}
         onRequestClose={closeConditionImages}
@@ -582,7 +594,6 @@ const OrderHistory = () => {
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
       >
         <div className="bg-white w-full max-w-4xl p-6 relative overflow-y-auto rounded-lg shadow-lg">
-          {/* Close Button */}
           <button
             onClick={closeConditionImages}
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -603,7 +614,6 @@ const OrderHistory = () => {
             </svg>
           </button>
 
-          {/* Title */}
           <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
             Vehicle Condition
           </h2>
@@ -611,7 +621,6 @@ const OrderHistory = () => {
             Inspect the car’s condition through the images below.
           </p>
 
-          {/* Swiper Carousel */}
           {selectedOrder && selectedOrder.image?.length > 0 ? (
             <Swiper
               modules={[Navigation]}
@@ -637,6 +646,50 @@ const OrderHistory = () => {
             </Swiper>
           ) : (
             <p className="text-gray-500 text-center">No images available</p>
+          )}
+        </div>
+      </ModalReactModal>
+
+      <ModalReactModal
+        isOpen={contractModalOpen}
+        onRequestClose={closeContractModal}
+        contentLabel="Contract Details"
+        className="fixed inset-0 flex items-center justify-center z-50"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+      >
+        <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full p-8 relative">
+          <button
+            onClick={closeContractModal}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+
+          {selectedContract ? (
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-gray-800 text-center border-b pb-4">
+                Contract Images
+              </h2>
+              <img
+                src={selectedContract}
+                alt="Contract"
+                className="w-full h-auto rounded-lg shadow-lg"
+              />
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center">No contract available</p>
           )}
         </div>
       </ModalReactModal>

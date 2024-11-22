@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState, useEffect } from "react";
 import { HiUser } from "react-icons/hi";
 import { toast } from "react-toastify";
@@ -9,6 +10,11 @@ import { Button, Label, TextInput } from "flowbite-react";
 import ModalReactModal from "react-modal";
 import { Modal as ModalFlowbite } from "flowbite-react";
 import axios from "axios";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import ImageViewerModal from "./ImageViewerModal";
 
 ModalReactModal.setAppElement("#root");
 
@@ -26,6 +32,15 @@ const DashRentalRequest = () => {
   const [currentCar, setCurrentCar] = useState({});
   const [uploading, setUploading] = useState(false);
   const [conditionImagesOpen, setConditionImagesOpen] = useState(false);
+  const [contactImage, setContactImage] = useState(null);
+  const [contactUploading, setContactUploading] = useState(false);
+  const [showConfirmReturnModal, setShowConfirmReturnModal] = useState(false);
+  const [punishmentAmount, setPunishmentAmount] = useState(0);
+  const [reason, setReason] = useState("");
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
   const statusLabels = {
     all: "All",
     New: "New",
@@ -74,7 +89,6 @@ const DashRentalRequest = () => {
 
     setUploading(false);
 
-    // Update the selectedOrder with the new images
     setSelectedOrder((prevOrder) => ({
       ...prevOrder,
       images: [...(prevOrder.images || []), ...imageUrls],
@@ -141,44 +155,103 @@ const DashRentalRequest = () => {
     setConditionImagesOpen(false);
   };
 
+  const handleOpenConfirmReturnModal = (orderId) => {
+    setCurrentOrderId(orderId);
+    setPunishmentAmount(0);
+    setReason("");
+    setShowConfirmReturnModal(true);
+  };
+
+  const handleCloseConfirmReturnModal = () => {
+    setShowConfirmReturnModal(false);
+  };
+
+  const handleViewImage = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageModal(true);
+  };
+
   const handleUpdateOrder = async () => {
     try {
       const { status } = await api.put(`/admins/orders/${selectedOrder.id}`, {
         images: selectedOrder.images,
+        contract: contactImage,
       });
-
+      handleCloseModalUpdateOrder();
       if (status === 200) {
         setRentalRequests((prevRequests) =>
           prevRequests.map((request) =>
             request.id === selectedOrder.id
-              ? { ...request, status: "PendingApproval" }
+              ? { ...request, status: "PendingConfirm" }
               : request
           )
         );
-
-        handleCloseModalUpdateOrder();
         toast.success("Order updated successfully!");
       }
     } catch (error) {
+      handleCloseModalUpdateOrder();
       toast.error("Failed to update the order.");
     }
   };
 
-  const confirmReturn = async (orderId) => {
+  const confirmReturnWithDetails = async () => {
     try {
       const { status } = await api.put(
-        `/admins/orders/${orderId}/confirm-return`
+        `/admins/orders/${currentOrderId}/confirm-return`,
+        {
+          punishmentAmount,
+          reason,
+        }
       );
-      if (status !== 200) {
-        toast.success("Confirm return successfully");
-        selectedOrder((prevOrders) =>
-          prevOrders.map((order) =>
-            order.id === orderId ? { ...order, status: "Returning" } : order
+      handleCloseConfirmReturnModal();
+      if (status === 200) {
+        toast.success("Return confirmed successfully!");
+        setRentalRequests((prevRequests) =>
+          prevRequests.map((request) =>
+            request.id === currentOrderId
+              ? { ...request, status: "Returning" }
+              : request
           )
         );
       }
     } catch (error) {
-      toast.error("Failed to cancel order");
+      handleCloseConfirmReturnModal();
+      toast.error("Failed to confirm return.");
+    }
+  };
+
+  const handleContactImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setContactUploading(true);
+
+    const fileFormData = new FormData();
+    fileFormData.append("file", file);
+    fileFormData.append(
+      "upload_preset",
+      import.meta.env.VITE_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+    fileFormData.append(
+      "cloud_name",
+      import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+    );
+    fileFormData.append("folder", "Cloudinary-React");
+
+    try {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${
+          import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+        }/image/upload`,
+        fileFormData
+      );
+      const imageUrl = res.data.secure_url;
+      setContactImage(imageUrl);
+    } catch (error) {
+      console.error("Error uploading the contact image:", error);
+      toast.error("Failed to upload the contact image.");
+    } finally {
+      setContactUploading(false);
     }
   };
 
@@ -240,6 +313,9 @@ const DashRentalRequest = () => {
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
                     User
+                  </th>
+                  <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
+                    Contract
                   </th>
                   <th className="px-5 py-3 bg-gray-100 border-b border-gray-200 text-gray-800 text-center text-sm uppercase font-normal whitespace-nowrap">
                     Actions
@@ -328,6 +404,18 @@ const DashRentalRequest = () => {
                         </div>
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
+                        {request.contract ? (
+                          <button
+                            onClick={() => handleViewImage(request.contract)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            View
+                          </button>
+                        ) : (
+                          <p className="text-gray-500">No Image</p>
+                        )}
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                         <div className="flex justify-center space-x-2">
                           {request.status === "New" && (
                             <HiCheckCircle
@@ -340,23 +428,25 @@ const DashRentalRequest = () => {
                           {request.status === "PendingReturn" && (
                             <HiCheckCircle
                               className="w-6 h-6 text-green-500 cursor-pointer hover:opacity-80"
-                              onClick={() => confirmReturn(request.id)}
+                              onClick={() =>
+                                handleOpenConfirmReturnModal(request.id)
+                              }
                             />
                           )}
                           <HiXCircle
                             className="w-6 h-6 text-red-500 cursor-pointer hover:opacity-80"
                             onClick={() => console.log("Reject", request.id)}
                           />
-                          <HiEye
-                            className="w-6 h-6 text-blue-500 cursor-pointer hover:opacity-80"
-                            onClick={() => {
-                              if (request.status === "PendingReturn") {
+                          {(request.status === "PendingReturn" ||
+                            request.status === "Returning" ||
+                            request.status === "Returning") && (
+                            <HiEye
+                              className="w-6 h-6 text-blue-500 cursor-pointer hover:opacity-80"
+                              onClick={() => {
                                 openConditionImages(request);
-                              } else {
-                                console.log("View", request.id);
-                              }
-                            }}
-                          />
+                              }}
+                            />
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -402,6 +492,47 @@ const DashRentalRequest = () => {
               </div>
             </div>
           </ModalFlowbite.Body>
+        </ModalFlowbite>
+      )}
+
+      {showConfirmReturnModal && (
+        <ModalFlowbite
+          show={showConfirmReturnModal}
+          onClose={handleCloseConfirmReturnModal}
+        >
+          <ModalFlowbite.Header>Confirm Return</ModalFlowbite.Header>
+          <ModalFlowbite.Body>
+            <div className="space-y-4">
+              <div>
+                <Label value="Punishment Amount" />
+                <TextInput
+                  type="number"
+                  value={punishmentAmount}
+                  onChange={(e) => setPunishmentAmount(Number(e.target.value))}
+                  placeholder="Enter punishment amount"
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label value="Reason" />
+                <TextInput
+                  type="text"
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  placeholder="Enter reason"
+                  className="mt-2"
+                />
+              </div>
+            </div>
+          </ModalFlowbite.Body>
+          <ModalFlowbite.Footer>
+            <Button onClick={confirmReturnWithDetails} color="dark">
+              Confirm
+            </Button>
+            <Button onClick={handleCloseConfirmReturnModal} color="gray">
+              Cancel
+            </Button>
+          </ModalFlowbite.Footer>
         </ModalFlowbite>
       )}
 
@@ -511,6 +642,32 @@ const DashRentalRequest = () => {
                   ))}
                 </div>
               </div>
+              <div>
+                <Label value="Upload Contact Image" />
+                <div className="mt-2 flex items-center">
+                  <input
+                    type="file"
+                    id="contactFile"
+                    accept="image/*"
+                    onChange={handleContactImageUpload}
+                    className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 cursor-pointer"
+                  />
+                </div>
+                {contactUploading && (
+                  <p className="text-green-500 mt-2">
+                    Uploading contact image...
+                  </p>
+                )}
+                {contactImage && (
+                  <div className="mt-4">
+                    <img
+                      src={contactImage}
+                      alt="Contact"
+                      className="w-32 h-32 object-cover rounded-md border"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </ModalFlowbite.Body>
           <ModalFlowbite.Footer>
@@ -531,10 +688,16 @@ const DashRentalRequest = () => {
         className="fixed inset-0 flex items-center justify-center z-50"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
       >
-        <div className="bg-white w-full h-full p-8 relative overflow-y-auto">
+        <div
+          className="relative w-full max-w-4xl p-6 rounded-lg shadow-lg overflow-hidden"
+          style={{
+            background: "linear-gradient(to bottom, #f8fafc, #e8eff3)",
+          }}
+        >
+          {/* Close Button */}
           <button
             onClick={closeConditionImages}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
           >
             <svg
               className="w-8 h-8"
@@ -551,24 +714,51 @@ const DashRentalRequest = () => {
               ></path>
             </svg>
           </button>
-          <h2 className="text-3xl font-semibold mb-6 text-center">
-            Car Condition Images
+
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">
+            Vehicle Condition Report
           </h2>
-          <div className="grid grid-cols-2 gap-6">
-            {selectedOrder &&
-              selectedOrder.image
-                ?.filter((img) => img.type === "Return")
-                .map((img, index) => (
-                  <img
-                    key={index}
-                    src={img.imageURL}
-                    alt={`Condition ${index + 1}`}
-                    className="w-full h-60 object-cover rounded-lg"
-                  />
-                ))}
+          <p className="text-sm text-gray-600 text-center mb-6">
+            Review the images below for a detailed inspection.
+          </p>
+
+          {/* Swiper Carousel */}
+          <div className="flex justify-center items-center">
+            {selectedOrder && selectedOrder.image?.length > 0 ? (
+              <Swiper
+                modules={[Navigation]}
+                navigation
+                spaceBetween={20}
+                slidesPerView={1}
+                className="w-full h-[400px] rounded-lg shadow-md"
+              >
+                {selectedOrder.image
+                  ?.filter((img) => img.type === "Return")
+                  .map((img, index) => (
+                    <SwiperSlide
+                      key={index}
+                      className="flex justify-center items-center bg-white rounded-lg shadow"
+                    >
+                      <img
+                        src={img.imageURL}
+                        alt={`Condition ${index + 1}`}
+                        className="max-w-[90%] max-h-[90%] object-contain rounded-lg"
+                      />
+                    </SwiperSlide>
+                  ))}
+              </Swiper>
+            ) : (
+              <p className="text-gray-500 text-center">No images available</p>
+            )}
           </div>
         </div>
       </ModalReactModal>
+
+      <ImageViewerModal
+        show={showImageModal}
+        onClose={() => setShowImageModal(false)}
+        imageUrl={selectedImage}
+      />
     </div>
   );
 };
