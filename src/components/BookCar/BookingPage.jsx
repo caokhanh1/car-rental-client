@@ -309,6 +309,7 @@ const BookingPage = () => {
                 rows="4"
               ></textarea>
             </div>
+
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -381,7 +382,7 @@ const BookingPage = () => {
           </ul>
         </div>
       </div>
-      <CommentsSection />
+      <CommentsSection carId={carId} />
     </div>
   );
 };

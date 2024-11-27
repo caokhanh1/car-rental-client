@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 
 const provider = new GoogleAuthProvider();
 
@@ -14,6 +15,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
   clientId: import.meta.env.VITE_FIREBASE_CLIENT_ID,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
 };
 
 // Initialize Firebase
@@ -23,4 +25,6 @@ provider.setCustomParameters({
   prompt: "select_account",
 });
 
-export { auth, provider, signInWithPopup };
+const database = getDatabase(app);
+
+export { auth, provider, signInWithPopup, database };
