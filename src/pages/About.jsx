@@ -2,42 +2,51 @@ import CarPng from "../assets/car1.png";
 
 const About = () => {
   return (
-    <div>
-      <div className="  sm:min-h-[600px] sm:grid sm:place-items-center duration-300">
-        <div className="container">
-          <div className="grid grid-cols-1 sm:grid-cols-2 place-items-center">
-            <div data-aos="slide-right" data-aos-duration="1500">
-              <img
-                src={CarPng}
-                alt=""
-                className="sm:scale-125 sm:-translate-x-11 max-h-[300px] drop-shadow-[2px_10px_6px_rgba(0,0,0,0.50)]"
-              />
-            </div>
-            <div>
-              <div className="space-y-5 sm:p-16 pb-6">
-                <h1
-                  data-aos="fade-up"
-                  className="text-3xl sm:text-4xl font-bold font-serif"
-                >
-                  About us
-                </h1>
-                <p data-aos="fade-up" className="leading-8 tracking-wide">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Aspernatur, magnam! Tenetur odio quo et maxime?
-                </p>
-                <p data-aos="fade-up">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Sequi, tempora.
-                </p>
-                <button
-                  data-aos="fade-up"
-                  data-aos-delay="1500"
-                  className="rounded-md bg-primary hover:bg-primary/80 transition duration-500 py-2 px-6 text-black"
-                >
-                  Get Started
-                </button>
-              </div>
-            </div>
+    <div className="bg-white py-24">
+      <div className="container mx-auto px-6">
+        {/* Giới Thiệu Chính */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 items-center">
+          <div data-aos="zoom-in-right" data-aos-duration="1500">
+            <img
+              src={CarPng}
+              alt="Xe"
+              className="max-h-[400px] rounded-3xl shadow-xl"
+            />
+          </div>
+          <div className="text-center sm:text-left">
+            <h1 className="text-5xl sm:text-6xl font-bold text-black mb-6">
+              Giới Thiệu Về Chúng Tôi
+            </h1>
+            <p className="leading-8 text-lg text-gray-700 mb-6">
+              Chào mừng bạn đến với [Tên Công Ty]! Chúng tôi cam kết cung cấp dịch vụ thuê xe chất lượng cao, đáng tin cậy. 
+            </p>
+            <p className="leading-8 text-lg text-gray-700 mb-8">
+              Công ty chúng tôi nổi bật nhờ vào cam kết cung cấp những chiếc xe tốt nhất, dịch vụ khách hàng xuất sắc.
+            </p>
+          </div>
+        </div>
+
+        {/* Các giá trị nổi bật */}
+        <div className="mt-24 grid grid-cols-1 sm:grid-cols-3 gap-12">
+          <div className="text-center p-6 rounded-xl shadow-lg bg-gray-100">
+            <h2 className="text-2xl font-semibold text-primary mb-4">Sứ Mệnh Của Chúng Tôi</h2>
+            <p className="text-lg text-gray-700">
+              Cung cấp trải nghiệm du lịch an toàn và liền mạch với dịch vụ chất lượng cao.
+            </p>
+          </div>
+
+          <div className="text-center p-6 rounded-xl shadow-lg bg-gray-100">
+            <h2 className="text-2xl font-semibold text-primary mb-4">Tại Sao Chọn Chúng Tôi?</h2>
+            <p className="text-lg text-gray-700">
+              Dịch vụ minh bạch, linh hoạt, hỗ trợ 24/7 là lý do tại sao khách hàng luôn tin tưởng chúng tôi.
+            </p>
+          </div>
+
+          <div className="text-center p-6 rounded-xl shadow-lg bg-gray-100">
+            <h2 className="text-2xl font-semibold text-primary mb-4">Điều Gì Làm Chúng Tôi Khác Biệt?</h2>
+            <p className="text-lg text-gray-700">
+              Dịch vụ cá nhân hóa, đội xe đa dạng và cam kết chất lượng khiến chúng tôi nổi bật.
+            </p>
           </div>
         </div>
       </div>

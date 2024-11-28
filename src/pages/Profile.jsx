@@ -12,10 +12,10 @@ const Profile = () => {
   const [file, setFile] = useState(undefined);
   const [licenseFile, setLicenseFile] = useState(undefined);
   const [uploading, setUploading] = useState(false);
-  const [updateSuccess, setUpdateSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [user, setUser] = useState({});
+  const [userLoaded, setUserLoaded] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -23,8 +23,10 @@ const Profile = () => {
         const { data } = await api.get("/me");
         setUser(data);
         setFormData(data);
+        setUserLoaded(true);
       } catch (err) {
         toast.error(err.response?.data?.message || "Failed to fetch user data");
+        setUserLoaded(true);
       }
     };
 
@@ -91,18 +93,14 @@ const Profile = () => {
     setLoading(true);
 
     try {
-      const { data, status } = await api.put("/me", formData);
+      const res = await api.put("/me", formData);
 
-      if (status !== 200) {
-        toast.error(data.message || "Update failed");
+      if (res.status === 200) {
+        toast.success("Profile updated successfully");
+        const updatedUser = { ...user, ...formData };
+        setUser(updatedUser);
         setLoading(false);
-        return;
       }
-
-      const updatedUser = { ...user, ...formData };
-      setUpdateSuccess(true);
-      setUser(updatedUser);
-      setLoading(false);
     } catch (err) {
       toast.error(err.response?.data?.message || "Update failed");
       setLoading(false);
@@ -115,7 +113,7 @@ const Profile = () => {
         Profile
       </h1>
 
-      {!user.isActive && (
+      {userLoaded && !user.isActive && (
         <div className="bg-red-100 text-red-700 p-4 mb-6 rounded-lg flex items-center gap-2">
           <FaExclamationCircle className="text-xl" />
           <span>
@@ -142,9 +140,7 @@ const Profile = () => {
           <p className="text-sm text-gray-500">Click to change avatar</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Username */}
           <div>
             <label className="text-gray-700 font-semibold mb-2 block">
               Username
@@ -159,7 +155,6 @@ const Profile = () => {
             />
           </div>
 
-          {/* Email */}
           <div>
             <label className="text-gray-700 font-semibold mb-2 block">
               Email
@@ -174,7 +169,6 @@ const Profile = () => {
             />
           </div>
 
-          {/* Phone */}
           <div>
             <label className="text-gray-700 font-semibold mb-2 block">
               Phone
@@ -189,35 +183,35 @@ const Profile = () => {
             />
           </div>
 
-          {/* Upload Driving License */}
-
-          <div>
-            <Label value="Upload Driving License" />
-            <div className="mt-2 flex items-center">
-              <input
-                type="file"
-                id="licenseFile"
-                accept="image/*"
-                onChange={(e) => setLicenseFile(e.target.files[0])}
-                className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
-              />
-            </div>
-            {uploading && (
-              <p className="text-blue-500 mt-2">Uploading image...</p>
-            )}
-            {formData.drivingLicense && !uploading && (
-              <div className="mt-4">
-                <Label value="Current Driving License" />
-                <img
-                  src={formData.drivingLicense}
-                  alt="Driving License"
-                  className="mt-2 w-32 h-32 object-cover rounded-md border"
+          {!formData.drivingLicense && (
+            <div>
+              <Label value="Upload Driving License" />
+              <div className="mt-2 flex items-center">
+                <input
+                  type="file"
+                  id="licenseFile"
+                  accept="image/*"
+                  onChange={(e) => setLicenseFile(e.target.files[0])}
+                  className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
                 />
               </div>
-            )}
-          </div>
+              {uploading && (
+                <p className="text-blue-500 mt-2">Uploading image...</p>
+              )}
+            </div>
+          )}
 
-          {/* Save Button */}
+          {formData.drivingLicense && !uploading && (
+            <div className="mt-4">
+              <Label value="Current Driving License" />
+              <img
+                src={formData.drivingLicense}
+                alt="Driving License"
+                className="mt-2 w-32 h-32 object-cover rounded-md border"
+              />
+            </div>
+          )}
+
           <div className="flex justify-end">
             <Button
               color="dark"
@@ -227,10 +221,6 @@ const Profile = () => {
               {loading ? "Saving..." : "Save"}
             </Button>
           </div>
-
-          {updateSuccess && (
-            <p className="text-green-600 mt-4">Profile updated successfully!</p>
-          )}
         </form>
       </div>
     </div>

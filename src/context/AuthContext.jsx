@@ -2,8 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { auth, provider, signInWithPopup } from "../config/firebase";
 
 const AuthContext = createContext();
@@ -192,7 +191,6 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={contextData}>
-      <ToastContainer />
       {loading ? null : children}
     </AuthContext.Provider>
   );
