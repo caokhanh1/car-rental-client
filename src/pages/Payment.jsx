@@ -90,26 +90,26 @@ const Payment = () => {
       </div>
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8">
         <h1 className="text-4xl font-bold text-center mb-6 text-gray-800">
-          Complete Transaction
+        Hoàn tất giao dịch
         </h1>
         {showForm && order && (
           <div className="bg-gray-200 text-gray-800 p-6 rounded-lg mb-8 shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Order Summary</h2>
+            <h2 className="text-2xl font-semibold mb-4">Tóm tắt đơn hàng</h2>
             <ul className="space-y-2">
               <li className="flex justify-between text-lg font-medium">
-                <span>Rental Start:</span>
+                <span>Thời gian bắt đầu:</span>
                 <span>{new Date(order.startDate).toLocaleString()}</span>
               </li>
               <li className="flex justify-between text-lg font-medium">
-                <span>Rental End:</span>
+                <span>Thời gian kết thúc:</span>
                 <span>{new Date(order.endDate).toLocaleString()}</span>
               </li>
               <li className="flex justify-between text-lg font-medium">
-                <span>Total Amount:</span>
+                <span>Tổng số tiền:</span>
                 <span>{order.cost} VND</span>
               </li>
               <li className="flex justify-between text-lg font-bold">
-                <span>Deposit:</span>
+                <span>Tiền đặt cọc:</span>
                 <span>{order.deposit} VND</span>
               </li>
             </ul>
@@ -144,14 +144,14 @@ const Payment = () => {
                   className="mt-1 mr-2 focus:ring-blue-500"
                 />
                 <span className="text-gray-700">
-                  I agree to the{" "}
+                Tôi đồng ý với{" "}
                   <a
                     href="#"
                     className="text-blue-500 hover:underline"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Rental Terms and Conditions
+                    Điều khoản và Điều kiện thuê xe
                   </a>
                   .
                 </span>
@@ -165,7 +165,7 @@ const Payment = () => {
               disabled={loading}
               className="py-3 px-6 rounded-lg w-full mt-6 shadow-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white transition duration-200"
             >
-              Confirm Payment
+            Xác nhận thanh toán
             </button>
           </form>
         )}
@@ -176,7 +176,7 @@ const Payment = () => {
               onClick={handleCancel}
               className="py-3 px-6 rounded-lg w-full shadow-lg bg-red-500 hover:bg-red-600 text-white transition duration-200"
             >
-              Cancel
+              Hủy
             </Button>
           </div>
         )}

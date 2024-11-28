@@ -125,11 +125,11 @@ const BookingPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-20">Loading...</div>;
+    return <div className="text-center py-20">Đang tải...</div>;
   }
 
   if (!car) {
-    return <div className="text-center py-20">Car not found!</div>;
+    return <div className="text-center py-20">Không tìm thấy xe!</div>;
   }
 
   return (
@@ -154,48 +154,48 @@ const BookingPage = () => {
 
           <div className="bg-gray-100 p-6 rounded-xl shadow-md flex-grow">
             <h2 className="text-2xl font-bold mb-4 text-gray-800">
-              Description
+              Mô tả về phương tiện
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Name</p>
+                <p className="text-sm text-gray-500">Tên</p>
                 <h3 className="text-lg font-semibold">{car.name}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Brand</p>
+                <p className="text-sm text-gray-500"> Thương hiệu</p>
                 <h3 className="text-lg font-semibold">{car.carBrand.brand}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Fuel Type</p>
+                <p className="text-sm text-gray-500"> Loại nhiên liệu</p>
                 <h3 className="text-lg font-semibold">{car.fuel}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">License Plate</p>
+                <p className="text-sm text-gray-500">Biển số xe</p>
                 <h3 className="text-lg font-semibold">{car.licensePlate}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">No. of Passengers</p>
+                <p className="text-sm text-gray-500">Số lượng hành khách</p>
                 <h3 className="text-lg font-semibold">{car.seats}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Vehicle Type</p>
+                <p className="text-sm text-gray-500">Loại xe</p>
                 <h3 className="text-lg font-semibold">{car.carType.type}</h3>
               </div>
             </div>
 
             <div className="mt-6">
-              <h2 className="text-2xl font-bold mb-4 text-gray-800">Rates</h2>
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">Tỷ giá</h2>
               <table className="w-full border-collapse border border-gray-300">
                 <thead>
                   <tr>
                     <th className="border border-gray-300 p-2">
-                      Hourly Rate (VND)
+                    Tỷ giá theo giờ (VND)
                     </th>
                     <th className="border border-gray-300 p-2">
-                      Daily Rate (VND)
+                    Tỷ giá hằng ngày (VND)
                     </th>
                     <th className="border border-gray-300 p-2">
-                      Security Deposit (%)
+                    Tiền đặt cọc cho xe (%)
                     </th>
                   </tr>
                 </thead>
@@ -218,11 +218,11 @@ const BookingPage = () => {
         </div>
 
         <div className="bg-white p-8 rounded-xl shadow-xl lg:max-w-md border border-gray-200 flex flex-col justify-between flex-grow">
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">Book Now</h2>
+          <h2 className="text-3xl font-bold mb-6 text-gray-800">Đặt ngay</h2>
           <form className="space-y-6">
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">
-                Full Name
+              Họ và tên
               </label>
               <input
                 type="text"
@@ -234,7 +234,7 @@ const BookingPage = () => {
             </div>
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">
-                Phone
+                Số điện thoại
               </label>
               <input
                 type="text"
@@ -255,7 +255,7 @@ const BookingPage = () => {
                   checked={drivingOption === "selfDrive"}
                   onChange={() => setDrivingOption("selfDrive")}
                 />
-                <span>Self-Drive</span>
+                <span>  Tự lái</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -266,14 +266,14 @@ const BookingPage = () => {
                   checked={drivingOption === "withDriver"}
                   onChange={() => setDrivingOption("withDriver")}
                 />
-                <span>With Driver</span>
+                <span>Có tài xế</span>
               </label>
             </div>
 
             <div className="flex space-x-4">
               <div className="w-1/2">
                 <label className="block text-sm font-medium mb-2 text-gray-700">
-                  Pick-up Date & Time
+                Ngày & giờ nhận hàng
                 </label>
                 <DatePicker
                   selected={pickupDate}
@@ -288,7 +288,7 @@ const BookingPage = () => {
 
               <div className="w-1/2">
                 <label className="block text-sm font-medium mb-2 text-gray-700">
-                  Returning Date & Time
+                Ngày & giờ trả về
                 </label>
                 <DatePicker
                   selected={returnDate}
@@ -309,7 +309,7 @@ const BookingPage = () => {
 
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">
-                Coupon
+                Phiếu giảm giá
               </label>
               <select
                 value={selectedCoupon}
@@ -327,7 +327,7 @@ const BookingPage = () => {
 
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">
-                Your Message
+                Bạn có ý kiến gì muốn thêm
               </label>
               <textarea
                 placeholder="Write Your Message Here"
@@ -347,9 +347,9 @@ const BookingPage = () => {
                 className="mr-2"
               />
               <label htmlFor="terms" className="text-sm text-gray-500">
-                I agree to the{" "}
+              Tôi đồng ý với{" "}
                 <a href="/terms" className="text-blue-500 underline">
-                  terms and conditions
+                điều khoản và điều kiện
                 </a>
                 .
               </label>
@@ -390,22 +390,22 @@ const BookingPage = () => {
 
       <div className="border-t border-gray-300 max-w-7xl mx-auto p-6 mt-1">
         <h2 className="text-3xl font-bold italic mb-4 text-gray-800">
-          Terms of Use
+        Điều khoản sử dụng
         </h2>
         <div className="bg-gray-100 p-6 rounded-lg shadow-md">
           <p className="text-gray-800 text-lg font-semibold mb-4">
-            Other regulations:
+            Quy định khác:
           </p>
           <ul className="list-disc list-inside space-y-2 text-gray-700 leading-7">
-            <li>Use the car for the right purpose.</li>
-            <li>Do not use the rental car for illegal purposes.</li>
-            <li>Do not use the rental car for pawning or mortgaging.</li>
-            <li>Do not smoke, chew gum, or litter in the car.</li>
-            <li>Do not transport prohibited or flammable goods.</li>
-            <li>Do not carry heavy-smelling fruits or foods in the car.</li>
+            <li>Sử dụng xe đúng mục đích.</li>
+            <li>Không sử dụng xe thuê vào mục đích bất hợp pháp.</li>
+            <li>Không sử dụng xe thuê để cầm cố hoặc thế chấp.</li>
+            <li>Không hút thuốc, nhai kẹo cao su, hoặc xả rác trong xe.</li>
+            <li>Không vận chuyển hàng hóa cấm hoặc dễ cháy nổ.</li>
+            <li>Không mang trái cây hoặc thực phẩm có mùi nặng vào xe.</li>
             <li>
-              When returning the car, if the car is dirty or has an odor, please
-              clean the car or pay an additional cleaning fee.
+              Khi trả xe, nếu xe bẩn hoặc có mùi, vui lòng vệ sinh xe hoặc thanh
+              toán thêm phí vệ sinh.
             </li>
           </ul>
         </div>

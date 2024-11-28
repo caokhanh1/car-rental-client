@@ -28,7 +28,7 @@ const CarList = () => {
   return (
     <div className="container mx-auto py-12 px-4">
       <h1 className="text-3xl sm:text-4xl font-bold font-serif text-center mb-8">
-        Car Rental
+        Phương tiện nổi bật
       </h1>
 
       {/* Car Cards */}
@@ -51,7 +51,7 @@ const CarList = () => {
             <div className="text-center mb-2">
               <h2 className="text-xl font-bold">{data.name}</h2>
               <p className="text-gray-500">
-                License Plate: {data.licensePlate}
+              Biển số xe: {data.licensePlate}
               </p>
             </div>
 
@@ -61,13 +61,13 @@ const CarList = () => {
                 <p className="text-lg font-bold text-black">
                   {data.pricePerDay.toLocaleString("vi-VN")} VND
                 </p>
-                <p className="text-sm text-gray-500">/ Day</p>
+                <p className="text-sm text-gray-500">/ Ngày</p>
               </div>
               <div className="text-center">
                 <p className="text-lg font-bold text-black">
                   {data.pricePerHour.toLocaleString("vi-VN")} VND
                 </p>
-                <p className="text-sm text-gray-500">/ Hour</p>
+                <p className="text-sm text-gray-500">/ Giờ</p>
               </div>
             </div>
 
@@ -75,7 +75,7 @@ const CarList = () => {
             <Link to={`/booking/${data.id}`}>
               <div className="flex justify-center">
                 <button className="px-4 py-2 bg-white text-black border-2 border-black rounded-full hover:bg-gray-200 transition duration-300">
-                  Rent Now
+                Thuê ngay
                 </button>
               </div>
             </Link>
@@ -83,7 +83,7 @@ const CarList = () => {
         ))}
         {cars.length === 0 && (
           <p className="text-center col-span-full text-gray-500">
-            No cars found matching your criteria.
+          Không tìm thấy xe nào phù hợp với tiêu chí của bạn.
           </p>
         )}
       </div>

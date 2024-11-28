@@ -44,14 +44,14 @@ const OrderHistory = () => {
 
   // Status Labels
   const statusLabels = {
-    all: "All",
-    New: "New",
-    PendingConfirm: "Pending",
-    OrderSuccess: "Order",
-    PendingReturn: "Pending Return",
-    Returning: "Returning",
-    Success: "Completed",
-    Canceled: "Canceled",
+    all: "Tất cả",
+    New: "Mới",
+    PendingConfirm: "Chờ xác nhận",
+    OrderSuccess: "Đã đặt xe",
+    PendingReturn: "Chờ trả xe",
+    Returning: "Đang trả xe",
+    Success: "Hoàn thành",
+    Canceled: "Đã hủy",
   };
 
   useEffect(() => {
@@ -264,7 +264,7 @@ const OrderHistory = () => {
       <div className="bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 rounded-lg shadow-lg mb-12">
         {/* Căn giữa và làm nổi bật tiêu đề */}
         <h2 className="text-4xl font-extrabold text-gray-900 text-center mb-12">
-          Order History
+          Lịch sử đặt xe
         </h2>
 
         {/* Nút filter */}
@@ -369,10 +369,10 @@ const OrderHistory = () => {
                           className="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-white transition"
                           onClick={() => openContractModal(order)}
                         >
-                          View
+                          Xem hợp đồng
                         </button>
                       ) : (
-                        <span className="text-gray-500">No Contract</span>
+                        <span className="text-gray-500">Không có hợp đồng</span>
                       )}
                     </td>
                     {/* Actions */}
@@ -465,7 +465,7 @@ const OrderHistory = () => {
           {selectedOrder && (
             <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-lg">
               <h2 className="text-2xl font-bold text-gray-800 text-center border-b pb-4">
-                Order Summary
+              Tóm tắt đơn hàng
               </h2>
 
               <div className="flex items-center justify-between border-b pb-4">
@@ -483,7 +483,7 @@ const OrderHistory = () => {
                       {selectedOrder.carOrder[0]?.car?.name || "Unknown Car"}
                     </h3>
                     <p className="text-sm text-gray-500">
-                      Status:{" "}
+                    Trạng thái:{" "}
                       <span
                         className={`${
                           selectedOrder.status === "New"
@@ -510,7 +510,7 @@ const OrderHistory = () => {
 
               <div className="space-y-4 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Rental start:</span>
+                  <span className="text-gray-500">Bắt đầu thuê:</span>
                   <span className="font-semibold text-gray-800">
                     {new Date(
                       selectedOrder.carOrder[0]?.startDate
@@ -518,7 +518,7 @@ const OrderHistory = () => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Rental end:</span>
+                  <span className="text-gray-500">Kết thúc cho thuê:</span>
                   <span className="font-semibold text-gray-800">
                     {new Date(
                       selectedOrder.carOrder[0]?.endDate
@@ -526,19 +526,19 @@ const OrderHistory = () => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Subtotal:</span>
+                  <span className="text-gray-500">Tổng số phụ:</span>
                   <span className="font-semibold text-gray-800">
                     {selectedOrder.cost} VND
                   </span>
                 </div>
                 <div className="flex justify-between border-t pt-4">
-                  <span className="text-gray-800 font-semibold">Total:</span>
+                  <span className="text-gray-800 font-semibold">Tổng cộng:</span>
                   <span className="text-xl font-bold text-gray-800">
                     {selectedOrder.cost} VND
                   </span>
                 </div>
                 <div className="flex justify-between border-t pt-4">
-                  <span className="text-gray-500">Deposit Amount:</span>
+                  <span className="text-gray-500">Số tiền gửi:</span>
                   <span className="font-semibold text-gray-800">
                     {selectedOrder.deposit} VND
                   </span>
@@ -551,7 +551,7 @@ const OrderHistory = () => {
                     onClick={() => withdrawOrder(selectedOrder.id)}
                     className="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-white transition"
                   >
-                    Withdraw Order
+                     Hủy đặt xe
                   </button>
                 )}
 
@@ -561,13 +561,13 @@ const OrderHistory = () => {
                       onClick={() => withdrawOrder(selectedOrder.id)}
                       className="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-white transition"
                     >
-                      Withdraw Order
+                      Hủy đặt xe
                     </button>
                     <button
                       onClick={() => confirmOrder(selectedOrder.id)}
                       className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
                     >
-                      Confirm Order
+                      Xác nhận đơn hàng
                     </button>
                   </>
                 )}
@@ -577,7 +577,7 @@ const OrderHistory = () => {
                     onClick={() => confirmReturnOrder(selectedOrder.id)}
                     className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
                   >
-                    Confirm Return
+                   Xác nhận đơn hàng
                   </button>
                 )}
               </div>
@@ -615,10 +615,10 @@ const OrderHistory = () => {
           </button>
 
           <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
-            Vehicle Condition
+          Tình trạng xe
           </h2>
           <p className="text-sm text-gray-600 text-center mb-4">
-            Inspect the car’s condition through the images below.
+          Kiểm tra tình trạng xe thông qua hình ảnh bên dưới.
           </p>
 
           {selectedOrder && selectedOrder.image?.length > 0 ? (
@@ -645,7 +645,7 @@ const OrderHistory = () => {
                 ))}
             </Swiper>
           ) : (
-            <p className="text-gray-500 text-center">No images available</p>
+            <p className="text-gray-500 text-center">Không có hình ảnh nào có sẵn</p>
           )}
         </div>
       </ModalReactModal>
@@ -680,7 +680,7 @@ const OrderHistory = () => {
           {selectedContract ? (
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-gray-800 text-center border-b pb-4">
-                Contract Images
+              Hình ảnh hợp đồng
               </h2>
               <img
                 src={selectedContract}
@@ -689,7 +689,7 @@ const OrderHistory = () => {
               />
             </div>
           ) : (
-            <p className="text-gray-500 text-center">No contract available</p>
+            <p className="text-gray-500 text-center">Không có hợp đồng nào có sẵn</p>
           )}
         </div>
       </ModalReactModal>
@@ -699,7 +699,7 @@ const OrderHistory = () => {
           show={showModalUpdateOrder}
           onClose={handleCloseModalUpdateOrder}
         >
-          <ModalFlowbite.Header>Return order</ModalFlowbite.Header>
+          <ModalFlowbite.Header>Trả lại đơn hàng</ModalFlowbite.Header>
           <ModalFlowbite.Body>
             <div className="space-y-6">
               <div>
@@ -715,7 +715,7 @@ const OrderHistory = () => {
                   />
                 </div>
                 {uploading && (
-                  <p className="text-blue-500 mt-2">Uploading images...</p>
+                  <p className="text-blue-500 mt-2">Đang tải hình ảnh lên...</p>
                 )}
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   {selectedOrder?.images?.map((imageUrl, index) => (
@@ -732,10 +732,10 @@ const OrderHistory = () => {
           </ModalFlowbite.Body>
           <ModalFlowbite.Footer>
             <Button onClick={handleUpdateOrder} color="dark">
-              Confirm
+            Xác nhận
             </Button>
             <Button onClick={handleCloseModalUpdateOrder} color="gray">
-              Cancel
+            Hủy bỏ
             </Button>
           </ModalFlowbite.Footer>
         </ModalFlowbite>

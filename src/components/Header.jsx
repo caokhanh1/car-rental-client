@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { FaCarCrash } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
-import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 
@@ -18,7 +18,7 @@ const Header = () => {
 
   return (
     <Navbar className="border-b-2 bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-md p-3">
-      {/* Logo Section */}
+      {/* Phần Logo */}
       <Link to="/" className="flex items-center gap-2">
         <div className="text-2xl flex items-center gap-2 font-bold uppercase">
           <span className="text-gray-300">Car</span>
@@ -27,20 +27,12 @@ const Header = () => {
         </div>
       </Link>
 
-      {/* Search Section */}
-      <form>
-        <TextInput
-          type="text"
-          placeholder="Search..."
-          rightIcon={AiOutlineSearch}
-          className="hidden lg:inline"
-        />
-      </form>
+     
       <Button className="w-12 h-10 lg:hidden" color="gray" pill>
         <AiOutlineSearch />
       </Button>
 
-      {/* User Section */}
+      {/* Phần Người dùng */}
       <div className="flex gap-2 md:order-2">
         {user ? (
           <Dropdown
@@ -78,13 +70,13 @@ const Header = () => {
 
             <Link to="/profile">
               <Dropdown.Item className="hover:bg-gray-100">
-                Profile
+                Hồ sơ cá nhân
               </Dropdown.Item>
             </Link>
 
             <Link to="/orders">
               <Dropdown.Item className="hover:bg-gray-100">
-                Order history
+                Lịch sử đặt xe
               </Dropdown.Item>
             </Link>
 
@@ -94,17 +86,17 @@ const Header = () => {
               onClick={logoutUser}
               className="text-red-600 hover:bg-red-50"
             >
-              Sign out
+              Đăng xuất
             </Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to="/sign-in">
-            <Button gradientDuoTone="pinkToOrange">Sign In</Button>
+            <Button gradientDuoTone="pinkToOrange">Đăng nhập</Button>
           </Link>
         )}
       </div>
 
-      {/* Navbar Links */}
+      {/* Liên kết Navbar */}
       <Navbar.Collapse className="hidden lg:flex space-x-4">
         <Link
           to="/"
@@ -112,7 +104,7 @@ const Header = () => {
             path === "/" ? "text-yellow-500" : "text-gray-300"
           } hover:text-yellow-500 transition duration-300`}
         >
-          Home
+          Trang chủ
         </Link>
         <Link
           to="/about"
@@ -120,7 +112,7 @@ const Header = () => {
             path === "/about" ? "text-yellow-500" : "text-gray-300"
           } hover:text-yellow-500 transition duration-300`}
         >
-          About
+          Giới thiệu
         </Link>
         <Link
           to="/cars"
@@ -128,7 +120,7 @@ const Header = () => {
             path === "/cars" ? "text-yellow-500" : "text-gray-300"
           } hover:text-yellow-500 transition duration-300`}
         >
-          Car
+          Xe
         </Link>
       </Navbar.Collapse>
     </Navbar>

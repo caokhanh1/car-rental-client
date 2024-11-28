@@ -25,7 +25,7 @@ const Profile = () => {
         setFormData(data);
         setUserLoaded(true);
       } catch (err) {
-        toast.error(err.response?.data?.message || "Failed to fetch user data");
+        toast.error(err.response?.data?.message || "Không thể tải thông tin người dùng");
         setUserLoaded(true);
       }
     };
@@ -74,7 +74,7 @@ const Profile = () => {
         [fieldName]: imageUrl,
       }));
     } catch (error) {
-      console.error("Error uploading the image:", error);
+      console.error("Lỗi khi tải lên hình ảnh:", error);
       setUploading(false);
     }
   };
@@ -96,13 +96,13 @@ const Profile = () => {
       const res = await api.put("/me", formData);
 
       if (res.status === 200) {
-        toast.success("Profile updated successfully");
+        toast.success("Cập nhật thông tin thành công");
         const updatedUser = { ...user, ...formData };
         setUser(updatedUser);
         setLoading(false);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Update failed");
+      toast.error(err.response?.data?.message || "Cập nhật thất bại");
       setLoading(false);
     }
   };
@@ -110,14 +110,14 @@ const Profile = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
-        Profile
+        Hồ Sơ
       </h1>
 
       {userLoaded && !user.isActive && (
         <div className="bg-red-100 text-red-700 p-4 mb-6 rounded-lg flex items-center gap-2">
           <FaExclamationCircle className="text-xl" />
           <span>
-            Your account is not active. Please contact support for activation.
+            Tài khoản của bạn chưa được kích hoạt. Vui lòng liên hệ hỗ trợ để kích hoạt.
           </span>
         </div>
       )}
@@ -137,13 +137,13 @@ const Profile = () => {
             alt="profile"
             className="rounded-full h-32 w-32 object-cover cursor-pointer border-4 border-white shadow-md"
           />
-          <p className="text-sm text-gray-500">Click to change avatar</p>
+          <p className="text-sm text-gray-500">Nhấn để thay đổi ảnh đại diện</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="text-gray-700 font-semibold mb-2 block">
-              Username
+              Tên người dùng
             </label>
             <input
               type="text"
@@ -151,7 +151,7 @@ const Profile = () => {
               id="username"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               onChange={handleChange}
-              placeholder="Username"
+              placeholder="Tên người dùng"
             />
           </div>
 
@@ -171,7 +171,7 @@ const Profile = () => {
 
           <div>
             <label className="text-gray-700 font-semibold mb-2 block">
-              Phone
+              Số điện thoại
             </label>
             <input
               type="tel"
@@ -179,13 +179,13 @@ const Profile = () => {
               id="phone"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               onChange={handleChange}
-              placeholder="Phone"
+              placeholder="Số điện thoại"
             />
           </div>
 
           {!formData.drivingLicense && (
             <div>
-              <Label value="Upload Driving License" />
+              <Label value="Tải lên Giấy phép lái xe" />
               <div className="mt-2 flex items-center">
                 <input
                   type="file"
@@ -196,17 +196,17 @@ const Profile = () => {
                 />
               </div>
               {uploading && (
-                <p className="text-blue-500 mt-2">Uploading image...</p>
+                <p className="text-blue-500 mt-2">Đang tải lên hình ảnh...</p>
               )}
             </div>
           )}
 
           {formData.drivingLicense && !uploading && (
             <div className="mt-4">
-              <Label value="Current Driving License" />
+              <Label value="Giấy phép lái xe hiện tại" />
               <img
                 src={formData.drivingLicense}
-                alt="Driving License"
+                alt="Giấy phép lái xe"
                 className="mt-2 w-32 h-32 object-cover rounded-md border"
               />
             </div>
@@ -218,7 +218,7 @@ const Profile = () => {
               type="submit"
               disabled={loading || !hasChanges}
             >
-              {loading ? "Saving..." : "Save"}
+              {loading ? "Đang lưu..." : "Lưu"}
             </Button>
           </div>
         </form>

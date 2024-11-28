@@ -47,10 +47,10 @@ const PaymentStatus = () => {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              Payment Successful!
+            Thanh toán thành công!
             </h1>
             <p className="text-gray-700 mb-4">
-              Returning to the store in ({countdown}) seconds
+            Trở lại lịch sử giao dịch trong ({countdown}) giây
             </p>
           </>
         );
@@ -61,10 +61,10 @@ const PaymentStatus = () => {
               <FaExclamationCircle className="h-16 w-16 mx-auto text-red-500" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              Payment Failed!
+            Thanh toán không thành công!
             </h1>
             <p className="text-gray-700 mb-4">
-              An error occurred during the payment process. Please try again.
+            Đã xảy ra lỗi trong quá trình thanh toán. Vui lòng thử lại.
             </p>
           </>
         );
@@ -76,10 +76,10 @@ const PaymentStatus = () => {
               <FaSpinner className="h-16 w-16 mx-auto text-yellow-500 animate-spin" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              Payment Processing...
+            Đang xử lý thanh toán...
             </h1>
             <p className="text-gray-700 mb-4">
-              Please wait while we process your payment.
+            Vui lòng đợi trong khi chúng tôi xử lý thanh toán của bạn.
             </p>
           </>
         );
@@ -95,7 +95,7 @@ const PaymentStatus = () => {
             onClick={handleNavigate}
             className="flex items-center justify-center py-2 px-4 mt-4 bg-gray-700 hover:bg-gray-800 text-white rounded-full shadow-lg transition duration-300"
           >
-            <span className="mr-2">Go to Orders</span>
+            <span className="mr-2">Đi đến đơn hàng</span>
             <FaArrowRight />
           </button>
         </div>

@@ -67,7 +67,7 @@ const CarList = () => {
   return (
     <div className="container mx-auto py-12 px-4">
       <h1 className="text-3xl sm:text-4xl font-bold font-serif text-center mb-8">
-        Car Rental
+        Danh sách xe
       </h1>
 
       <div className="flex flex-wrap justify-center mb-8 gap-4">
@@ -89,7 +89,7 @@ const CarList = () => {
       <div className="flex justify-center mb-8">
         <input
           type="text"
-          placeholder="Search by name..."
+          placeholder="Tìm kiếm theo tên..."
           className="w-full max-w-md px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-600 shadow-md"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -104,7 +104,7 @@ const CarList = () => {
           >
             {!!data.isInUse && (
               <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
-                Unavailable
+              Không có sẵn
               </div>
             )}
 
@@ -119,7 +119,7 @@ const CarList = () => {
             <div className="text-center mb-2">
               <h2 className="text-xl font-bold">{data.name}</h2>
               <p className="text-gray-500">
-                License Plate: {data.licensePlate}
+              Biển số xe: {data.licensePlate}
               </p>
             </div>
 
@@ -134,14 +134,14 @@ const CarList = () => {
                 <p className="text-lg font-bold text-black">
                   {data.pricePerHour.toLocaleString("vi-VN")} VND
                 </p>
-                <p className="text-sm text-gray-500">/ Hour</p>
+                <p className="text-sm text-gray-500">/ Giờ</p>
               </div>
             </div>
 
             <Link to={`/booking/${data.id}`}>
               <div className="flex justify-center">
                 <button className="px-4 py-2 border-2 rounded-full transition duration-300 bg-white text-black border-black hover:bg-gray-200">
-                  Rent Now
+                Thuê ngay
                 </button>
               </div>
             </Link>
@@ -149,7 +149,7 @@ const CarList = () => {
         ))}
         {filteredData.length === 0 && (
           <p className="text-center col-span-full text-gray-500">
-            No cars found matching your criteria.
+          Không tìm thấy xe nào phù hợp với tiêu chí của bạn.
           </p>
         )}
       </div>
