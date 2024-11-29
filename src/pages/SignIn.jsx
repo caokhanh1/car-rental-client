@@ -95,7 +95,7 @@ const SignIn = () => {
           </form>
         )}
         {isVerifying && (
-          <form onSubmit={handleVerifyCode} className="flex flex-col gap-4">
+          <form onSubmit={handleVerifyCode} className="flex flex-col gap-4 mb-40">
             <div>
               <Label value="Nhập mã xác minh" />
               <TextInput
