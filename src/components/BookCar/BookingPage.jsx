@@ -84,14 +84,14 @@ const BookingPage = () => {
     try {
       if (new Date(returnDate) <= new Date(pickupDate)) {
         toast.warn(
-          "Ngày và giờ trả phải muộn hơn ngày và giờ nhận"
+          "Returning date and time must be later than pick-up date and time"
         );
         return;
       }
 
       if (drivingOption === "selfDrive" && !user?.drivingLicense) {
         toast.warn(
-          "Bạn phải cập nhật giấy phép lái xe của mình để đặt dịch vụ tự lái."
+          "You must update your driving license to book a self-drive option."
         );
         return;
       }
@@ -125,11 +125,11 @@ const BookingPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-20">Đang tải...</div>;
+    return <div className="text-center py-20">Loading...</div>;
   }
 
   if (!car) {
-    return <div className="text-center py-20">Không tìm thấy xe!</div>;
+    return <div className="text-center py-20">Car not found!</div>;
   }
 
   return (
@@ -154,48 +154,48 @@ const BookingPage = () => {
 
           <div className="bg-gray-100 p-6 rounded-xl shadow-md flex-grow">
             <h2 className="text-2xl font-bold mb-4 text-gray-800">
-              Mô tả về phương tiện
+              Description
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Tên</p>
+                <p className="text-sm text-gray-500">Name</p>
                 <h3 className="text-lg font-semibold">{car.name}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500"> Thương hiệu</p>
+                <p className="text-sm text-gray-500">Brand</p>
                 <h3 className="text-lg font-semibold">{car.carBrand.brand}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500"> Loại nhiên liệu</p>
+                <p className="text-sm text-gray-500">Fuel Type</p>
                 <h3 className="text-lg font-semibold">{car.fuel}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Biển số xe</p>
+                <p className="text-sm text-gray-500">License Plate</p>
                 <h3 className="text-lg font-semibold">{car.licensePlate}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Số lượng hành khách</p>
+                <p className="text-sm text-gray-500">No. of Passengers</p>
                 <h3 className="text-lg font-semibold">{car.seats}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Loại xe</p>
+                <p className="text-sm text-gray-500">Vehicle Type</p>
                 <h3 className="text-lg font-semibold">{car.carType.type}</h3>
               </div>
             </div>
 
             <div className="mt-6">
-              <h2 className="text-2xl font-bold mb-4 text-gray-800">Tỷ giá</h2>
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">Rates</h2>
               <table className="w-full border-collapse border border-gray-300">
                 <thead>
                   <tr>
                     <th className="border border-gray-300 p-2">
-                    Tỷ giá theo giờ (VND)
+                      Hourly Rate (VND)
                     </th>
                     <th className="border border-gray-300 p-2">
-                    Tỷ giá hằng ngày (VND)
+                      Daily Rate (VND)
                     </th>
                     <th className="border border-gray-300 p-2">
-                    Tiền đặt cọc cho xe (%)
+                      Security Deposit (%)
                     </th>
                   </tr>
                 </thead>
@@ -218,11 +218,11 @@ const BookingPage = () => {
         </div>
 
         <div className="bg-white p-8 rounded-xl shadow-xl lg:max-w-md border border-gray-200 flex flex-col justify-between flex-grow">
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">Đặt ngay</h2>
+          <h2 className="text-3xl font-bold mb-6 text-gray-800">Book Now</h2>
           <form className="space-y-6">
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">
-              Họ và tên
+                Full Name
               </label>
               <input
                 type="text"
@@ -234,7 +234,7 @@ const BookingPage = () => {
             </div>
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">
-                Số điện thoại
+                Phone
               </label>
               <input
                 type="text"
@@ -255,7 +255,7 @@ const BookingPage = () => {
                   checked={drivingOption === "selfDrive"}
                   onChange={() => setDrivingOption("selfDrive")}
                 />
-                <span>  Tự lái</span>
+                <span>Self-Drive</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -266,29 +266,46 @@ const BookingPage = () => {
                   checked={drivingOption === "withDriver"}
                   onChange={() => setDrivingOption("withDriver")}
                 />
-                <span>Có tài xế</span>
+                <span>With Driver</span>
               </label>
             </div>
 
             <div className="flex space-x-4">
               <div className="w-1/2">
                 <label className="block text-sm font-medium mb-2 text-gray-700">
-                Ngày & giờ nhận hàng
+                  Pick-up Date & Time
                 </label>
                 <DatePicker
                   selected={pickupDate}
-                  onChange={(date) => setPickupDate(date)}
+                  onChange={(date) => {
+                    if (
+                      date &&
+                      date.toDateString() === new Date().toDateString()
+                    ) {
+                      const now = new Date();
+
+                      if (
+                        date.getHours() < now.getHours() ||
+                        (date.getHours() === now.getHours() &&
+                          date.getMinutes() < now.getMinutes())
+                      ) {
+                        date.setHours(now.getHours(), now.getMinutes());
+                      }
+                    }
+                    setPickupDate(date);
+                  }}
                   showTimeSelect
                   dateFormat="Pp"
                   className="w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                   placeholderText="Select date & time"
                   onKeyDown={(e) => e.preventDefault()}
+                  minDate={new Date()}
                 />
               </div>
 
               <div className="w-1/2">
                 <label className="block text-sm font-medium mb-2 text-gray-700">
-                Ngày & giờ trả về
+                  Returning Date & Time
                 </label>
                 <DatePicker
                   selected={returnDate}
@@ -309,7 +326,7 @@ const BookingPage = () => {
 
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">
-                Phiếu giảm giá
+                Coupon
               </label>
               <select
                 value={selectedCoupon}
@@ -327,7 +344,7 @@ const BookingPage = () => {
 
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">
-                Bạn có ý kiến gì muốn thêm
+                Your Message
               </label>
               <textarea
                 placeholder="Write Your Message Here"
@@ -347,9 +364,9 @@ const BookingPage = () => {
                 className="mr-2"
               />
               <label htmlFor="terms" className="text-sm text-gray-500">
-              Tôi đồng ý với{" "}
+                I agree to the{" "}
                 <a href="/terms" className="text-blue-500 underline">
-                điều khoản và điều kiện
+                  terms and conditions
                 </a>
                 .
               </label>
@@ -390,22 +407,22 @@ const BookingPage = () => {
 
       <div className="border-t border-gray-300 max-w-7xl mx-auto p-6 mt-1">
         <h2 className="text-3xl font-bold italic mb-4 text-gray-800">
-        Điều khoản sử dụng
+          Terms of Use
         </h2>
         <div className="bg-gray-100 p-6 rounded-lg shadow-md">
           <p className="text-gray-800 text-lg font-semibold mb-4">
-            Quy định khác:
+            Other regulations:
           </p>
           <ul className="list-disc list-inside space-y-2 text-gray-700 leading-7">
-            <li>Sử dụng xe đúng mục đích.</li>
-            <li>Không sử dụng xe thuê vào mục đích bất hợp pháp.</li>
-            <li>Không sử dụng xe thuê để cầm cố hoặc thế chấp.</li>
-            <li>Không hút thuốc, nhai kẹo cao su, hoặc xả rác trong xe.</li>
-            <li>Không vận chuyển hàng hóa cấm hoặc dễ cháy nổ.</li>
-            <li>Không mang trái cây hoặc thực phẩm có mùi nặng vào xe.</li>
+            <li>Use the car for the right purpose.</li>
+            <li>Do not use the rental car for illegal purposes.</li>
+            <li>Do not use the rental car for pawning or mortgaging.</li>
+            <li>Do not smoke, chew gum, or litter in the car.</li>
+            <li>Do not transport prohibited or flammable goods.</li>
+            <li>Do not carry heavy-smelling fruits or foods in the car.</li>
             <li>
-              Khi trả xe, nếu xe bẩn hoặc có mùi, vui lòng vệ sinh xe hoặc thanh
-              toán thêm phí vệ sinh.
+              When returning the car, if the car is dirty or has an odor, please
+              clean the car or pay an additional cleaning fee.
             </li>
           </ul>
         </div>
