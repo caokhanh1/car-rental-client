@@ -84,14 +84,14 @@ const BookingPage = () => {
     try {
       if (new Date(returnDate) <= new Date(pickupDate)) {
         toast.warn(
-          "Returning date and time must be later than pick-up date and time"
+          "Ngày và giờ trả phải muộn hơn ngày và giờ nhận"
         );
         return;
       }
 
       if (drivingOption === "selfDrive" && !user?.drivingLicense) {
         toast.warn(
-          "You must update your driving license to book a self-drive option."
+          "Bạn phải cập nhật giấy phép lái xe của mình để đặt dịch vụ tự lái."
         );
         return;
       }
