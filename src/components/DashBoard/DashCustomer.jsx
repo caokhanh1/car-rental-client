@@ -37,7 +37,7 @@ export default function DashCustomers() {
 
     if (!didFetchData.current) {
       fetchUsers();
-      didFetchData.current = true;
+      didFetchData.current = false;
     }
   }, [api]);
 
