@@ -129,7 +129,7 @@ const Header = () => {
             path === "/cars" ? "text-yellow-500" : "text-gray-300"
           } hover:text-yellow-500 transition duration-300`}
         >
-          Xe
+          Phương tiện
         </Link>
       </Navbar.Collapse>
     </Navbar>
