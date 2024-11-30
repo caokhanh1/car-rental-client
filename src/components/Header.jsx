@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { FaCarCrash } from "react-icons/fa";
 import { AiOutlineSearch } from "react-icons/ai";
-import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 
@@ -27,7 +27,16 @@ const Header = () => {
         </div>
       </Link>
 
-     
+    
+      {/* Search Section */}
+      <form>
+        <TextInput
+          type="text"
+          placeholder="Search..."
+          rightIcon={AiOutlineSearch}
+          className="hidden lg:inline"
+        />
+      </form>
       <Button className="w-12 h-10 lg:hidden" color="gray" pill>
         <AiOutlineSearch />
       </Button>
