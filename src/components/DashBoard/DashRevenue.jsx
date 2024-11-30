@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useAxios from "../../utils/useAxios";
 import { Line, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -24,30 +25,48 @@ ChartJS.register(
 );
 
 const LineChart = () => {
-  const data = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-    ],
-    datasets: [
-      {
-        label: "Car Bookings",
-        data: [5, 10, 8, 15, 20, 18, 25, 30, 28, 35],
-        borderColor: "#42a5f5",
-        backgroundColor: "rgba(66, 165, 245, 0.2)",
-        tension: 0.3,
-        fill: true,
-      },
-    ],
-  };
+  const api = useAxios();
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
+
+  useEffect(() => {
+    // Hàm gọi API
+    const fetchData = async () => {
+      try {
+        const items = await api.get('/admins/payments');
+        
+
+        var labels = []
+        var dataY = []
+        console.log(items.data)
+        items.data.forEach((item, i )=> {
+          console.log(item,i)
+          labels.push(i + 1)
+          dataY.push(item)
+        })
+        
+        setChartData({
+          labels: labels,
+          datasets: [
+            {
+              label: "Car Bookings",
+              data: dataY,
+              borderColor: "#42a5f5",
+              backgroundColor: "rgba(66, 165, 245, 0.2)",
+              tension: 0.3,
+              fill: true,
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      }
+    };
+
+    fetchData(); // Gọi API khi component mount
+  }, []);
 
   const options = {
     responsive: true,
@@ -56,9 +75,21 @@ const LineChart = () => {
       legend: { position: "top" },
       title: { display: true, text: "Car Bookings Over Time" },
     },
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 200000,
+        },
+        beginAtZero: true, 
+      },
+    },
   };
 
-  return <Line data={data} options={options} />;
+  return (
+    <div style={{ height: "300px", width: "100%" }}>
+      <Line data={chartData} options={options} />
+    </div>
+  );
 };
 
 const PieChart = () => {
@@ -162,6 +193,7 @@ export default function Dashboard() {
     </div>
   );
 }
+
 
 const DashboardCard = ({ title, value, linkText, icon }) => {
   return (
