@@ -128,7 +128,7 @@ const CarList = () => {
                 <p className="text-lg font-bold text-black">
                   {data.pricePerDay.toLocaleString("vi-VN")} VND
                 </p>
-                <p className="text-sm text-gray-500">/ Day</p>
+                <p className="text-sm text-gray-500">/ Ngày</p>
               </div>
               <div className="text-center">
                 <p className="text-lg font-bold text-black">
