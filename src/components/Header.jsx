@@ -18,7 +18,7 @@ const Header = () => {
 
   return (
     <Navbar className="border-b-2 bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-md p-3">
-      {/* Phần Logo */}
+      {/* Logo Section */}
       <Link to="/" className="flex items-center gap-2">
         <div className="text-2xl flex items-center gap-2 font-bold uppercase">
           <span className="text-gray-300">Car</span>
@@ -27,7 +27,6 @@ const Header = () => {
         </div>
       </Link>
 
-    
       {/* Search Section */}
       <form>
         <TextInput
@@ -41,7 +40,7 @@ const Header = () => {
         <AiOutlineSearch />
       </Button>
 
-      {/* Phần Người dùng */}
+      {/* User Section */}
       <div className="flex gap-2 md:order-2">
         {user ? (
           <Dropdown
@@ -79,13 +78,13 @@ const Header = () => {
 
             <Link to="/profile">
               <Dropdown.Item className="hover:bg-gray-100">
-                Hồ sơ cá nhân
+                Profile
               </Dropdown.Item>
             </Link>
 
             <Link to="/orders">
               <Dropdown.Item className="hover:bg-gray-100">
-                Lịch sử đặt xe
+                Order History
               </Dropdown.Item>
             </Link>
 
@@ -95,17 +94,17 @@ const Header = () => {
               onClick={logoutUser}
               className="text-red-600 hover:bg-red-50"
             >
-              Đăng xuất
+              Sign Out
             </Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to="/sign-in">
-            <Button gradientDuoTone="pinkToOrange">Đăng nhập</Button>
+            <Button gradientDuoTone="pinkToOrange">Sign In</Button>
           </Link>
         )}
       </div>
 
-      {/* Liên kết Navbar */}
+      {/* Navbar Links */}
       <Navbar.Collapse className="hidden lg:flex space-x-4">
         <Link
           to="/"
@@ -113,7 +112,7 @@ const Header = () => {
             path === "/" ? "text-yellow-500" : "text-gray-300"
           } hover:text-yellow-500 transition duration-300`}
         >
-          Trang chủ
+          Home
         </Link>
         <Link
           to="/about"
@@ -121,7 +120,7 @@ const Header = () => {
             path === "/about" ? "text-yellow-500" : "text-gray-300"
           } hover:text-yellow-500 transition duration-300`}
         >
-          Giới thiệu
+          About
         </Link>
         <Link
           to="/cars"
@@ -129,7 +128,7 @@ const Header = () => {
             path === "/cars" ? "text-yellow-500" : "text-gray-300"
           } hover:text-yellow-500 transition duration-300`}
         >
-          Phương tiện
+          Vehicles
         </Link>
       </Navbar.Collapse>
     </Navbar>

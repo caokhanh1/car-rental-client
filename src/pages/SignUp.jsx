@@ -81,7 +81,7 @@ const SignUp = () => {
 
   return (
     <div className="p-3 max-w-lg mx-auto mb-100">
-      <h1 className="text-3xl text-center font-semibold my-7">Đăng Ký</h1>
+      <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <Label value="Email" />
@@ -93,7 +93,7 @@ const SignUp = () => {
           />
         </div>
         <div>
-          <Label value="Mật khẩu" />
+          <Label value="Password" />
           <TextInput
             type="password"
             placeholder="Password"
@@ -103,7 +103,7 @@ const SignUp = () => {
         </div>
 
         <div>
-          <Label value="Tên người dùng" />
+          <Label value="Username" />
           <TextInput
             type="text"
             placeholder="Username"
@@ -112,7 +112,7 @@ const SignUp = () => {
           />
         </div>
         <div>
-          <Label value="Số điện thoại" />
+          <Label value="Phone Number" />
           <TextInput
             type="tel"
             placeholder="Phone"
@@ -122,7 +122,7 @@ const SignUp = () => {
         </div>
 
         <div>
-          <Label value="Tải lên Giấy phép Lái xe" />
+          <Label value="Upload Driving License" />
           <input
             type="file"
             id="drivingLicense"
@@ -137,19 +137,19 @@ const SignUp = () => {
           />
         </div>
 
-        {uploading && <p className="text-blue-500 mt-2">Đang tải hình ảnh...</p>}
+        {uploading && <p className="text-blue-500 mt-2">Uploading image...</p>}
 
         <button
           disabled={loading}
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
         >
-          {loading ? "Đang tải..." : "Đăng Ký"}
+          {loading ? "Loading..." : "Sign Up"}
         </button>
       </form>
       <div className="flex gap-2 mt-5">
-        <p>Đã có tài khoản?</p>
+        <p>Already have an account?</p>
         <Link to="/sign-in">
-          <span className="text-blue-700">Đăng nhập</span>
+          <span className="text-blue-700">Sign In</span>
         </Link>
       </div>
     </div>

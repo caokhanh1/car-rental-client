@@ -1,4 +1,5 @@
 import carIcon from "../../assets/car-icon.png";
+
 const Hero = () => {
   return (
     <div>
@@ -19,24 +20,25 @@ const Hero = () => {
             </div>
             <div className="space-y-5 order-2 sm:order-1 sm:pr-32">
               <p data-aos="fade-up" className="text-primary text-2xl font-serif">
-                Nhanh chóng và tiện lợi
+                Quick and Convenient
               </p>
               <h1
                 data-aos="fade-up"
                 data-aos-delay="600"
                 className="text-5xl lg:text-7xl font-semibold font-serif"
               >
-                Thuê xe dễ dàng
+              Car Rentals
               </h1>
               <p data-aos="fade-up" data-aos-delay="1000">
-                Trải nghiệm dịch vụ thuê xe linh hoạt, đáp ứng mọi nhu cầu di chuyển của bạn với sự an toàn và chất lượng hàng đầu.
+                Experience flexible car rental services, tailored to meet your
+                every travel need with top-notch safety and quality.
               </p>
               <button
                 data-aos="fade-up"
                 data-aos-delay="1500"
                 className="rounded-md bg-primary hover:bg-primary/80 transition duration-500 py-2 px-6 text-black"
               >
-                Bắt đầu ngay
+                Get Started
               </button>
             </div>
           </div>

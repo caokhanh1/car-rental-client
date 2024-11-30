@@ -6,7 +6,7 @@ export default function ComparePrices() {
       <div className="container">
         <div className="pb-12">
           <h1 className="text-3xl font-semibold text-center sm:text-4xl font-serif">
-            Chúng tôi so sánh giá thuê xe, bạn tiết kiệm!
+            We Compare Car Rental Prices, You Save!
           </h1>
         </div>
 
@@ -14,48 +14,44 @@ export default function ComparePrices() {
           {/* Left Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm dark:bg-dark">
             <h2 className="font-bold text-lg mb-4">
-              Tìm chiếc xe thuê hoàn hảo cho chuyến đi của bạn
+              Find the Perfect Rental Car for Your Trip
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              CarRental.com là đơn vị hàng đầu trong việc đặt xe thuê trực tuyến; chúng tôi so sánh
-              các ưu đãi thuê xe từ nhiều công ty để bạn có thể chọn lựa phương án tốt nhất cho chuyến đi của mình.
+              CarRental.com is a leader in online car rental booking; we compare rental deals from multiple companies so you can choose the best option for your trip.
             </p>
             <p className="text-gray-600 dark:text-gray-300">
-              Nhiều trang web khác ẩn các khoản phí và chi phí phụ. DiscoverCars.com bao gồm tất cả
-              các khoản phí bắt buộc, thuế và chi phí trong giá báo, vì vậy sẽ không có bất kỳ điều bất ngờ
-              nào khi bạn đến bàn thuê xe.
+              Many other websites hide fees and extra costs. DiscoverCars.com includes all mandatory fees, taxes, and costs in the quoted price, so there are no surprises when you get to the rental desk.
             </p>
           </div>
 
           {/* Middle Section */}
           <div className="bg-blue-50 p-6 rounded-lg shadow-sm dark:bg-dark">
-            <h2 className="font-bold text-lg mb-4">Tại sao bạn nên đặt xe với chúng tôi?</h2>
+            <h2 className="font-bold text-lg mb-4">Why Book with Us?</h2>
             <ul className="space-y-4">
               <li className="flex items-center gap-2">
                 <FaTimesCircle className="text-blue-500 dark:text-blue-400" />
-                <span>Không có phí ẩn</span>
+                <span>No Hidden Fees</span>
               </li>
               <li className="flex items-center gap-2">
                 <FaHeadset className="text-blue-500 dark:text-blue-400" />
-                <span>Hỗ trợ khách hàng 24/7 đa ngôn ngữ</span>
+                <span>24/7 Multilingual Customer Support</span>
               </li>
               <li className="flex items-center gap-2">
                 <FaCheckCircle className="text-blue-500 dark:text-blue-400" />
-                <span>Hủy miễn phí</span>
+                <span>Free Cancellations</span>
               </li>
               <li className="flex items-center gap-2">
                 <FaThumbsUp className="text-blue-500 dark:text-blue-400" />
-                <span>Thông tin bạn có thể tin cậy</span>
+                <span>Information You Can Trust</span>
               </li>
             </ul>
           </div>
 
           {/* Right Section */}
           <div className="bg-yellow-50 p-6 rounded-lg shadow-sm dark:bg-dark">
-            <h2 className="font-bold text-lg mb-4">Tại sao giá của chúng tôi thấp hơn?</h2>
+            <h2 className="font-bold text-lg mb-4">Why Are Our Prices Lower?</h2>
             <p className="text-gray-600 dark:text-gray-300">
-              Vì chúng tôi đàm phán giá cho nhiều chiếc xe thuê cùng lúc trực tiếp với các công ty cho
-              thuê xe, chúng tôi có thể cung cấp mức giá thấp hơn cho khách hàng của mình.
+              Because we negotiate prices for multiple rental cars directly with car rental companies, we can offer lower rates to our customers.
             </p>
           </div>
         </div>

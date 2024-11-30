@@ -84,7 +84,7 @@ const CommentsSection = ({ carId }) => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 mt-1">
-      <h2 className="text-3xl font-bold italic mb-4 text-gray-800">Bình luận</h2>
+      <h2 className="text-3xl font-bold italic mb-4 text-gray-800">Comments</h2>
       <div className="p-6 bg-slate-100 rounded-lg shadow-lg">
         <div className="space-y-8">
           {comments.map((comment) => (
@@ -153,7 +153,7 @@ const CommentsSection = ({ carId }) => {
                     className="text-sm text-gray-500 ml-4"
                     onClick={() => setReplyingTo(null)}
                   >
-                    Hủy bỏ
+                    Cancel
                   </button>
                 </form>
               )}
@@ -162,7 +162,7 @@ const CommentsSection = ({ carId }) => {
         </div>
 
         <div className="mt-10">
-          <h3 className="text-2xl font-semibold mb-4">Để lại bình luận</h3>
+          <h3 className="text-2xl font-semibold mb-4">Leave a Comment</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <textarea
@@ -178,7 +178,7 @@ const CommentsSection = ({ carId }) => {
               type="submit"
               className="bg-black text-white py-2 px-4 rounded-lg"
             >
-              Đăng bình luận
+              Submit Comment
             </button>
           </form>
         </div>
