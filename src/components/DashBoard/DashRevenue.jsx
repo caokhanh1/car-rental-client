@@ -32,7 +32,6 @@ const LineChart = () => {
   });
 
   useEffect(() => {
-    // Hàm gọi API
     const fetchData = async () => {
       try {
         const items = await api.get('/admins/payments');
@@ -40,9 +39,7 @@ const LineChart = () => {
 
         var labels = []
         var dataY = []
-        console.log(items.data)
         items.data.forEach((item, i )=> {
-          console.log(item,i)
           labels.push(i + 1)
           dataY.push(item)
         })
@@ -65,7 +62,7 @@ const LineChart = () => {
       }
     };
 
-    fetchData(); // Gọi API khi component mount
+    fetchData(); 
   }, []);
 
   const options = {
@@ -86,23 +83,52 @@ const LineChart = () => {
   };
 
   return (
-    <div style={{ height: "300px", width: "100%" }}>
+    <div style={{ height: "100%", width: "100%" }}>
       <Line data={chartData} options={options} />
     </div>
   );
 };
 
 const PieChart = () => {
-  const data = {
-    labels: ["Paid", "Pending", "Failed"],
-    datasets: [
-      {
-        label: "Payment Status",
-        data: [60, 25, 15],
-        backgroundColor: ["#4caf50", "#ff9800", "#f44336"],
-      },
-    ],
-  };
+  const api = useAxios();
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get('/admins/payments/payment-by-status');
+        const name = ["SUCCESS","PENDING","FAILED"]
+        var value = []
+        name.forEach(item => {
+          if (Number.isInteger(response.data[item])) {
+            value.push(response.data[item])
+          }else{
+            value.push(0)  
+          }
+        })
+
+        console.log(value)
+
+        setChartData({
+          labels: name, 
+          datasets: [
+            {
+              label: "Payment Status",
+              data: value, 
+              backgroundColor: ["#4caf50", "#ff9800", "#f44336"], 
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching pie chart data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const options = {
     responsive: true,
@@ -113,8 +139,13 @@ const PieChart = () => {
     },
   };
 
-  return <Pie data={data} options={options} />;
+  return (
+    <div style={{ height: "100%", width: "100%" }}>
+      <Pie data={chartData} options={options} />
+    </div>
+  );
 };
+
 
 export default function Dashboard() {
   const data = [

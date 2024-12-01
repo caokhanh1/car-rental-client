@@ -51,5 +51,6 @@
     "vite": "^5.3.4",
     "vite-plugin-eslint": "^1.8.1"
   },
+  "homepage": ".",
   "proxy": "https://api.payos.com"
 }
