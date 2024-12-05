@@ -39,7 +39,7 @@ const BookingPage = () => {
       try {
         const { data, status } = await api.get(`/users/cars/${carId}`);
         if (status === 200) {
-          setCar(data);
+          setCar(data.car);
         }
       } catch (error) {
         toast.error("Failed to fetch car details");
