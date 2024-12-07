@@ -3,7 +3,6 @@ import useAxios from "../utils/useAxios";
 import { toast } from "react-toastify";
 import { FaCar } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
 import { MdOutlineKeyboardReturn } from "react-icons/md";
 import axios from "axios";
 import { Button, Label } from "flowbite-react";
@@ -28,7 +27,6 @@ const OrderHistory = () => {
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
-  const navigate = useNavigate();
   const [contractModalOpen, setContractModalOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
 
@@ -155,9 +153,7 @@ const OrderHistory = () => {
         `/users/orders/${orderId}/confirm`
       );
       if (status === 200) {
-        navigate("/payment", {
-          state: { checkoutUrl: data.checkoutURL, orderId },
-        });
+        window.location.href = data.checkoutURL;
       }
     } catch (error) {
       toast.error("Failed to confirm order");
@@ -168,9 +164,7 @@ const OrderHistory = () => {
     try {
       const { data, status } = await api.put(`/users/orders/${orderId}/pay`);
       if (status === 200) {
-        navigate("/payment", {
-          state: { checkoutUrl: data.checkoutURL, orderId },
-        });
+        window.location.href = data.checkoutURL;
       }
     } catch (error) {
       toast.error("Failed to confirm return order");
