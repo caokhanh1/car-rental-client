@@ -292,6 +292,9 @@ const BookingPage = () => {
                         date.setHours(now.getHours(), now.getMinutes());
                       }
                     }
+                    if (returnDate && date > returnDate) {
+                      setReturnDate(null);
+                    }
                     setPickupDate(date);
                   }}
                   showTimeSelect
@@ -312,7 +315,13 @@ const BookingPage = () => {
                   onChange={(date) => setReturnDate(date)}
                   minDate={pickupDate}
                   filterDate={(date) => {
-                    return new Date(date) >= new Date(pickupDate);
+                    return date.getDate() >= pickupDate.getDate();
+                  }}
+                  filterTime={(time) => {
+                    if (pickupDate && time.toDateString() === new Date(pickupDate).toDateString()) {
+                      return time.getTime() > new Date(pickupDate).getTime();
+                    }
+                    return true; 
                   }}
                   showTimeSelect
                   dateFormat="Pp"
