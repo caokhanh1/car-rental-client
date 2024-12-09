@@ -52,5 +52,8 @@
     "vite-plugin-eslint": "^1.8.1"
   },
   "homepage": ".",
-  "proxy": "https://api.payos.com"
+  "proxy": "https://api.payos.com",
+  "engines": {
+  "node": "18.x"
+}
 }
