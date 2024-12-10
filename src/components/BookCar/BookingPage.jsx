@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 const BookingPage = () => {
   const api = useAxios();
   const { carId } = useParams();
+  const [canComment, setCanComment] = useState(null);
   const [car, setCar] = useState(null);
   const [user, setUser] = useState(null);
   const [coupons, setCoupons] = useState([]);
@@ -40,6 +41,7 @@ const BookingPage = () => {
         const { data, status } = await api.get(`/users/cars/${carId}`);
         if (status === 200) {
           setCar(data.car);
+          setCanComment(data.canComment)
         }
       } catch (error) {
         toast.error("Failed to fetch car details");
@@ -436,7 +438,7 @@ const BookingPage = () => {
           </ul>
         </div>
       </div>
-      <CommentsSection carId={carId} />
+      <CommentsSection carId={carId} canComment={canComment} />
     </div>
   );
 };

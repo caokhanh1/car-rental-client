@@ -4,7 +4,7 @@ import { ref, push, onValue } from "firebase/database";
 import { database } from "../../config/firebase";
 import AuthContext from "../../context/AuthContext";
 
-const CommentsSection = ({ carId }) => {
+const CommentsSection = ({ carId, canComment }) => {
   const { user } = useContext(AuthContext);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState({
@@ -146,7 +146,7 @@ const CommentsSection = ({ carId }) => {
                     type="submit"
                     className="bg-black text-white py-2 px-4 rounded-lg"
                   >
-                    Reply
+                    Post Reply
                   </button>
                   <button
                     type="button"
@@ -172,13 +172,19 @@ const CommentsSection = ({ carId }) => {
                 onChange={handleChange}
                 className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
                 rows="5"
+                disabled = {!canComment}
               ></textarea>
             </div>
             <button
               type="submit"
-              className="bg-black text-white py-2 px-4 rounded-lg"
+              className={`py-2 px-4 rounded-lg ${
+                canComment
+                  ? "bg-black text-white hover:bg-gray-800"
+                  : "bg-red-300 text-white cursor-not-allowed"
+              }`}
+              disabled={!canComment}
             >
-              Submit Comment
+              {canComment ? "Post Comment" : "Comment Disabled"}
             </button>
           </form>
         </div>
@@ -189,6 +195,7 @@ const CommentsSection = ({ carId }) => {
 
 CommentsSection.propTypes = {
   carId: PropTypes.string.isRequired,
+  canComment: PropTypes.bool.isRequired,
 };
 
 export default CommentsSection;
