@@ -22,6 +22,8 @@
     "flowbite-react": "^0.10.1",
     "gapi-script": "^1.2.0",
     "jwt-decode": "^4.0.0",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.46",
     "payos-checkout": "^1.0.9",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
@@ -54,6 +56,6 @@
   "homepage": ".",
   "proxy": "https://api.payos.com",
   "engines": {
-  "node": "18.x"
-}
+    "node": "18.x"
+  }
 }

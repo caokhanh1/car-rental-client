@@ -6,6 +6,7 @@ import CommentsSection from "./CommentsSection";
 import { FaArrowLeft } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment-timezone";
 
 const BookingPage = () => {
   const api = useAxios();
@@ -97,13 +98,14 @@ const BookingPage = () => {
         );
         return;
       }
-
+      console.log("pickupDate", moment(pickupDate).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss'))
+      console.log("returnDate", moment(returnDate).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss'))
       const bookingData = {
         carID: car.id,
         carName: car.name,
         withDriver: drivingOption === "withDriver",
-        startDate: pickupDate,
-        endDate: returnDate,
+        startDate: moment(pickupDate).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss'),
+        endDate: moment(returnDate).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss'),
         couponID: selectedCoupon || null,
         message: message,
       };
