@@ -12,6 +12,7 @@
   "dependencies": {
     "@cloudinary/react": "^1.13.0",
     "@cloudinary/url-gen": "^1.21.0",
+    "@google-cloud/dialogflow": "^6.12.0",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.7",
     "aos": "^2.3.4",
@@ -24,6 +25,7 @@
     "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.46",
+    "openai": "^4.76.0",
     "payos-checkout": "^1.0.9",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
