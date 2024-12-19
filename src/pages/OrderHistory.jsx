@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useAxios from "../utils/useAxios";
 import { toast } from "react-toastify";
-import { FaCar } from "react-icons/fa";
+import { FaCar, FaFileImage } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import { MdOutlineKeyboardReturn } from "react-icons/md";
 import axios from "axios";
@@ -22,6 +22,7 @@ const OrderHistory = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [conditionImagesOpen, setConditionImagesOpen] = useState(false);
+  const [evidenceImagesOpen, setEvidenceImagesOpen] = useState(false);
   const [showModalUpdateOrder, setShowModalUpdateOrder] = useState(false);
   const [uploading, setUploading] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -126,6 +127,14 @@ const OrderHistory = () => {
 
   const closeConditionImages = () => {
     setConditionImagesOpen(false);
+  };
+
+  const openEvidenceImages = () => {
+    setEvidenceImagesOpen(true);
+  };
+
+  const closeEvidenceImages = () => {
+    setEvidenceImagesOpen(false);
   };
 
   const withdrawOrder = async (orderId) => {
@@ -492,14 +501,24 @@ const OrderHistory = () => {
                     </p>
                   </div>
                 </div>
-                {selectedOrder.status !== "New" && (
-                  <button
-                    className="bg-gray-100 text-gray-600 p-3 rounded-full shadow hover:bg-gray-200 hover:scale-105 transition-transform"
-                    onClick={openConditionImages}
-                  >
-                    <FaCar className="w-5 h-5" />
-                  </button>
-                )}
+                <div className="flex items-center space-x-2">
+                  {selectedOrder.status !== "New" && (
+                    <button
+                      className="bg-gray-100 text-gray-600 p-3 rounded-full shadow hover:bg-gray-200 hover:scale-105 transition-transform"
+                      onClick={openConditionImages}
+                    >
+                      <FaCar className="w-5 h-5" />
+                    </button>
+                  )}
+                  {selectedOrder.evidence && (
+                    <button
+                      className="bg-gray-100 text-gray-600 p-3 rounded-full shadow hover:bg-gray-200 hover:scale-105 transition-transform"
+                      onClick={openEvidenceImages}
+                    >
+                      <FaFileImage className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-4 text-sm">
@@ -643,7 +662,67 @@ const OrderHistory = () => {
           )}
         </div>
       </ModalReactModal>
+      <ModalReactModal
+        isOpen={evidenceImagesOpen}
+        onRequestClose={closeEvidenceImages}
+        contentLabel="Car Condition"
+        className="fixed inset-0 flex items-center justify-center z-50"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+      >
+        <div className="bg-white w-full max-w-4xl p-6 relative overflow-y-auto rounded-lg shadow-lg">
+          <button
+            onClick={closeEvidenceImages}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
 
+          <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
+            Evidence
+          </h2>
+          <p className="text-sm text-gray-600 text-center mb-4">
+            Evidence is the images below.
+          </p>
+
+          {selectedOrder && selectedOrder.evidence?.length > 0 ? (
+            <Swiper
+              modules={[Navigation]}
+              navigation
+              spaceBetween={20}
+              slidesPerView={1}
+              className="w-full h-[400px] rounded-lg"
+            >
+              {(
+                  <SwiperSlide
+                    key={1}
+                    className="flex justify-center items-center"
+                  >
+                    <img
+                      src={selectedOrder.evidence}
+                      alt={`Condition ${2}`}
+                      className="max-w-[90%] max-h-[90%] object-contain rounded-lg shadow"
+                    />
+                  </SwiperSlide>
+                )}
+            </Swiper>
+          ) : (
+            <p className="text-gray-500 text-center">No images available</p>
+          )}
+        </div>
+      </ModalReactModal>
       <ModalReactModal
         isOpen={contractModalOpen}
         onRequestClose={closeContractModal}
