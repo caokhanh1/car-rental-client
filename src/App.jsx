@@ -21,6 +21,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import OrderHistory from "./pages/OrderHistory";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import PrivateRoute from "./components/Private";
+
 
 export default function App() {
   return (
@@ -72,6 +74,14 @@ export default function App() {
             }
           />
           <Route
+            path="/reset-password"
+            element={
+              <AuthRedirect>
+                <ResetPassword />
+              </AuthRedirect>
+            }
+          />
+          <Route
             path="/reset"
             element={
               <AuthRedirect>
@@ -92,7 +102,9 @@ export default function App() {
             path="/cars"
             element={
               <AuthAdminRedirect>
+                <PrivateRoute>
                 <Cars />
+                </PrivateRoute>
               </AuthAdminRedirect>
             }
           />
