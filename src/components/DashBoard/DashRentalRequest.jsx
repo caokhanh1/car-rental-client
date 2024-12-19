@@ -34,6 +34,9 @@ const DashRentalRequest = () => {
   const [conditionImagesOpen, setConditionImagesOpen] = useState(false);
   const [contactImage, setContactImage] = useState(null);
   const [contactUploading, setContactUploading] = useState(false);
+  const [evidenceUploading, setEvidenceUploading] = useState(false);
+  const [evidenceImage, setEvidenceImage] = useState(null);
+
   const [showConfirmReturnModal, setShowConfirmReturnModal] = useState(false);
   const [punishmentAmount, setPunishmentAmount] = useState(0);
   const [reason, setReason] = useState("");
@@ -89,10 +92,13 @@ const DashRentalRequest = () => {
 
     setUploading(false);
 
-    setSelectedOrder((prevOrder) => ({
-      ...prevOrder,
-      images: [...(prevOrder.images || []), ...imageUrls],
-    }));
+    setSelectedOrder((prevOrder) => {
+      console.log(prevOrder, "====")
+      return {
+        ...prevOrder,
+        images: [...(prevOrder.images || []), ...imageUrls],
+      }
+    });
   };
 
   useEffect(() => {
@@ -201,6 +207,7 @@ const DashRentalRequest = () => {
         {
           punishmentAmount,
           reason,
+          evidenceImage
         }
       );
       handleCloseConfirmReturnModal();
@@ -253,7 +260,43 @@ const DashRentalRequest = () => {
     } finally {
       setContactUploading(false);
     }
-  };
+  }
+
+
+  const handleEvidenceImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setEvidenceUploading(true);
+
+    const fileFormData = new FormData();
+    fileFormData.append("file", file);
+    fileFormData.append(
+      "upload_preset",
+      import.meta.env.VITE_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+    fileFormData.append(
+      "cloud_name",
+      import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+    );
+    fileFormData.append("folder", "Cloudinary-React");
+
+    try {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${
+          import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+        }/image/upload`,
+        fileFormData
+      );
+      const imageUrl = res.data.secure_url;
+      setEvidenceImage(imageUrl);
+    } catch (error) {
+      console.error("Error uploading the contact image:", error);
+      toast.error("Failed to upload the contact image.");
+    } finally {
+      setEvidenceUploading(false);
+    }
+};
 
   return (
     <div className="container mx-auto px-4 sm:px-8 mt-6">
@@ -522,6 +565,32 @@ const DashRentalRequest = () => {
                   placeholder="Enter reason"
                   className="mt-2"
                 />
+              </div>
+              <div>
+                <Label value="Evidence" />
+                <div className="mt-2 flex items-center">
+                  <input
+                    type="file"
+                    id="contactFile"
+                    accept="image/*"
+                    onChange={handleEvidenceImageUpload}
+                    className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 cursor-pointer"
+                  />
+                </div>
+                {evidenceUploading && (
+                  <p className="text-green-500 mt-2">
+                    Uploading evidence image...
+                  </p>
+                )}
+                {evidenceImage && (
+                  <div className="mt-4">
+                    <img
+                      src={evidenceImage}
+                      alt="Evidence"
+                      className="w-32 h-32 object-cover rounded-md border"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </ModalFlowbite.Body>

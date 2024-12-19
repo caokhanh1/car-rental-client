@@ -7,6 +7,7 @@ import {
   FaUser,
   FaCalculator,
   FaCarCrash,
+  FaTags
 } from "react-icons/fa";
 import { RiProfileFill, RiFileListFill } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
@@ -126,6 +127,16 @@ export default function DashSidebar() {
                   className="hover:text-yellow-500 transition duration-300"
                 >
                   Customers Manage
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=coupon">
+                <Sidebar.Item
+                  active={tab === "coupon"}
+                  icon={FaTags}
+                  as="div"
+                  className="hover:text-yellow-500 transition duration-300"
+                >
+                  Coupons
                 </Sidebar.Item>
               </Link>
             </Sidebar.ItemGroup>
