@@ -5,11 +5,10 @@ import {
   FaChartPie,
   FaUsers,
   FaUser,
-  FaCalculator,
   FaCarCrash,
   FaTags
 } from "react-icons/fa";
-import { RiProfileFill, RiFileListFill } from "react-icons/ri";
+import { RiProfileFill } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 
@@ -140,33 +139,6 @@ export default function DashSidebar() {
                 </Sidebar.Item>
               </Link>
             </Sidebar.ItemGroup>
-
-            <Sidebar.ItemGroup>
-              <div className="text-sm font-semibold text-gray-400 mb-2 ml-4">
-                Useful
-              </div>
-              <Link to="/dashboard?tab=income">
-                <Sidebar.Item
-                  active={tab === "income"}
-                  icon={FaCalculator}
-                  as="div"
-                  className="hover:text-yellow-500 transition duration-300"
-                >
-                  Calculate Income
-                </Sidebar.Item>
-              </Link>
-              <Link to="/dashboard?tab=summary">
-                <Sidebar.Item
-                  active={tab === "summary"}
-                  icon={RiFileListFill}
-                  as="div"
-                  className="hover:text-yellow-500 transition duration-300"
-                >
-                  Daily Summary
-                </Sidebar.Item>
-              </Link>
-            </Sidebar.ItemGroup>
-
             <Sidebar.ItemGroup>
               <div className="text-sm font-semibold text-gray-400 mb-2 ml-4">
                 Profile

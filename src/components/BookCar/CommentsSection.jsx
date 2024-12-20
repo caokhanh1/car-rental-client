@@ -172,7 +172,7 @@ const CommentsSection = ({ carId, canComment }) => {
                 onChange={handleChange}
                 className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
                 rows="5"
-                disabled = {!canComment}
+                disabled={!canComment}
               ></textarea>
             </div>
             <button

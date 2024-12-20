@@ -71,6 +71,10 @@ export const AuthProvider = ({ children }) => {
         if (data.code === "USER_IS_NOT_VERIFIED") {
           setIsVerifying(true);
           setLoading(false);
+          setFormData((prev) => ({
+            ...prev,
+            email: e.target.email.value,
+          }));
           await fetch(
             `${import.meta.env.VITE_APP_API_URL}/auths/generate-verifying-code`,
             {
@@ -101,7 +105,6 @@ export const AuthProvider = ({ children }) => {
   const handleVerifyCode = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(formData.email, e.target.verificationCode.value);
     try {
       const verificationResponse = await fetch(
         `${import.meta.env.VITE_APP_API_URL}/auths/verify-code`,
@@ -118,6 +121,7 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (verificationResponse.status === 200) {
+        setIsVerifying(false);
         await loginUser(e);
       } else {
         toast.error(await verificationResponse.text());

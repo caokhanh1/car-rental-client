@@ -22,10 +22,15 @@ const Profile = () => {
       try {
         const { data } = await api.get("/me");
         setUser(data);
-        setFormData(data);
+        setFormData((prevData) => ({
+          ...prevData,
+          ...data,
+          imageURL: data.imageURL,
+        }));
+
         setUserLoaded(true);
       } catch (err) {
-        toast.error(err.response?.data?.message || "Failed to load user data");
+        toast.error(err.response?.data?.message || "Failed to fetch user data");
         setUserLoaded(true);
       }
     };
@@ -35,7 +40,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (file) {
-      handleFileUpload(file, "avatar");
+      handleFileUpload(file, "imageURL");
     }
     if (licenseFile && !user.isActive) {
       handleFileUpload(licenseFile, "drivingLicense");
@@ -74,7 +79,7 @@ const Profile = () => {
         [fieldName]: imageUrl,
       }));
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading the image:", error);
       setUploading(false);
     }
   };
@@ -102,7 +107,7 @@ const Profile = () => {
         setLoading(false);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to update profile");
+      toast.error(err.response?.data?.message || "Update failed");
       setLoading(false);
     }
   };
@@ -117,7 +122,7 @@ const Profile = () => {
         <div className="bg-red-100 text-red-700 p-4 mb-6 rounded-lg flex items-center gap-2">
           <FaExclamationCircle className="text-xl" />
           <span>
-            Your account is not activated. Please contact support to activate it.
+            Your account is not active. Please contact support for activation.
           </span>
         </div>
       )}
@@ -133,7 +138,11 @@ const Profile = () => {
           />
           <img
             onClick={() => fileRef.current.click()}
-            src={formData.imageURL || "https://via.placeholder.com/150"}
+            src={
+              formData.imageURL ||
+              user.imageURL ||
+              "https://via.placeholder.com/150"
+            }
             alt="profile"
             className="rounded-full h-32 w-32 object-cover cursor-pointer border-4 border-white shadow-md"
           />
@@ -171,7 +180,7 @@ const Profile = () => {
 
           <div>
             <label className="text-gray-700 font-semibold mb-2 block">
-              Phone Number
+              Phone
             </label>
             <input
               type="tel"
@@ -179,7 +188,7 @@ const Profile = () => {
               id="phone"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               onChange={handleChange}
-              placeholder="Phone Number"
+              placeholder="Phone"
             />
           </div>
 
