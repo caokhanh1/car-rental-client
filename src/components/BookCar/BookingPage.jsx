@@ -110,14 +110,16 @@ const BookingPage = () => {
         message: message,
       };
 
-      const { status } = await api.post("/users/orders", bookingData);
+      const { status, data } = await api.post("/users/orders", bookingData);
 
       if (status === 200) {
-        toast.success("Car booked successfully!", {
-          onClose: () => {
-            navigate("/orders");
-          },
-        });
+        toast.success(
+          `Car booked successfully! Tổng số tiền quý khách phải thanh toán là ${data.toLocaleString("vi-VN")}`,
+          {
+            onClose: () => {
+              navigate("/orders");
+            },
+          });
       } else {
         toast.error("Failed to book car");
         setIsSubmitting(false);
@@ -178,10 +180,6 @@ const BookingPage = () => {
                 <h3 className="text-lg font-semibold">{car.licensePlate}</h3>
               </div>
               <div>
-                <p className="text-sm text-gray-500">No. of Passengers</p>
-                <h3 className="text-lg font-semibold">{car.seats}</h3>
-              </div>
-              <div>
                 <p className="text-sm text-gray-500">Vehicle Type</p>
                 <h3 className="text-lg font-semibold">{car.carType.type}</h3>
               </div>
@@ -206,10 +204,10 @@ const BookingPage = () => {
                 <tbody>
                   <tr>
                     <td className="border text-center border-gray-300 p-2">
-                      {car.pricePerHour}
+                      {car.pricePerHour.toLocaleString("vi-VN")}
                     </td>
                     <td className="border text-center border-gray-300 p-2">
-                      {car.pricePerDay}
+                      {car.pricePerDay.toLocaleString("vi-VN")}
                     </td>
                     <td className="border text-center border-gray-300 p-2">
                       30
@@ -387,7 +385,7 @@ const BookingPage = () => {
             <button
               onClick={handleBooking}
               className={`w-full py-3 mt-6 rounded-lg shadow-md transition-colors duration-300 ${
-                !user.isActive
+                !user.isActive && drivingOption === "selfDrive"
                   ? "bg-gray-400 text-white cursor-not-allowed"
                   : car.isInUse ||
                     !termsAccepted ||
@@ -398,7 +396,7 @@ const BookingPage = () => {
                   : "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white hover:from-yellow-600 hover:to-yellow-700"
               }`}
               disabled={
-                !user?.isActive ||
+                !user?.isActive && drivingOption === "selfDrive" ||
                 car?.isInUse ||
                 !termsAccepted ||
                 !pickupDate ||
@@ -408,7 +406,7 @@ const BookingPage = () => {
             >
               {isSubmitting
                 ? "Processing..."
-                : !user.isActive
+                : !user.isActive && drivingOption === "selfDrive"
                 ? "Account Not Activated"
                 : car.isInUse
                 ? "Currently Booked"

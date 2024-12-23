@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { HiUser } from "react-icons/hi";
 import { toast } from "react-toastify";
 import useAxios from "../../utils/useAxios";
-import { HiCheckCircle, HiXCircle, HiEye } from "react-icons/hi";
+import { HiCheckCircle, HiEye } from "react-icons/hi";
 
 import { FaCar } from "react-icons/fa";
 import { Button, Label, TextInput } from "flowbite-react";
@@ -93,11 +93,11 @@ const DashRentalRequest = () => {
     setUploading(false);
 
     setSelectedOrder((prevOrder) => {
-      console.log(prevOrder, "====")
+
       return {
         ...prevOrder,
         images: [...(prevOrder.images || []), ...imageUrls],
-      }
+      };
     });
   };
 
@@ -207,7 +207,7 @@ const DashRentalRequest = () => {
         {
           punishmentAmount,
           reason,
-          evidenceImage
+          evidenceImage,
         }
       );
       handleCloseConfirmReturnModal();
@@ -260,8 +260,7 @@ const DashRentalRequest = () => {
     } finally {
       setContactUploading(false);
     }
-  }
-
+  };
 
   const handleEvidenceImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -296,7 +295,7 @@ const DashRentalRequest = () => {
     } finally {
       setEvidenceUploading(false);
     }
-};
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-8 mt-6">
@@ -422,7 +421,7 @@ const DashRentalRequest = () => {
                         </span>
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
-                        {request.cost} (VND)
+                        {request.cost.toLocaleString("vi-VN")} (VND)
                         {request.isPay ? (
                           <span className="ml-2 text-green-500">✅</span>
                         ) : (
@@ -430,7 +429,7 @@ const DashRentalRequest = () => {
                         )}
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
-                        {request.deposit} (VND)
+                        {request.deposit.toLocaleString("vi-VN")} (VND)
                         {request.isDeposit ? (
                           <span className="ml-2 text-green-500">✅</span>
                         ) : (
@@ -476,10 +475,10 @@ const DashRentalRequest = () => {
                               }
                             />
                           )}
-                          <HiXCircle
+                          {/* <HiXCircle
                             className="w-6 h-6 text-red-500 cursor-pointer hover:opacity-80"
                             onClick={() => console.log("Reject", request.id)}
-                          />
+                          /> */}
                           {(request.status === "PendingReturn" ||
                             request.status === "Returning" ||
                             request.status === "Returning") && (
@@ -600,6 +599,12 @@ const DashRentalRequest = () => {
             </Button>
             <Button onClick={handleCloseConfirmReturnModal} color="gray">
               Cancel
+            </Button>
+            <Button
+              onClick={() => window.open("https://www.csgt.vn/tra-cuu-phuong-tien-vi-pham.html", "_blank")}
+              color="blue"
+            >
+              Kiểm tra vi phạm
             </Button>
           </ModalFlowbite.Footer>
         </ModalFlowbite>

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { FaCarCrash } from "react-icons/fa";
-import { AiOutlineSearch } from "react-icons/ai";
-import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
+// import { AiOutlineSearch } from "react-icons/ai";
+import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 
@@ -11,6 +11,7 @@ const Header = () => {
   const [adminView, setAdminView] = useState(isAdmin());
 
   useEffect(() => {
+    console.log(user)
     setAdminView(isAdmin());
   }, [isAdmin]);
 
@@ -28,7 +29,7 @@ const Header = () => {
       </Link>
 
       {/* Search Section */}
-      <form>
+      {/* <form>
         <TextInput
           type="text"
           placeholder="Search..."
@@ -38,7 +39,7 @@ const Header = () => {
       </form>
       <Button className="w-12 h-10 lg:hidden" color="gray" pill>
         <AiOutlineSearch />
-      </Button>
+      </Button> */}
 
       {/* User Section */}
       <div className="flex gap-2 md:order-2">
@@ -50,7 +51,7 @@ const Header = () => {
               <div className="relative">
                 <Avatar
                   alt="user"
-                  img={user.profilePicture}
+                  img={user.image_url}
                   rounded
                   className={user.is_active === "False" ? "opacity-70" : ""}
                 />
@@ -84,7 +85,7 @@ const Header = () => {
 
             <Link to="/orders">
               <Dropdown.Item className="hover:bg-gray-100">
-                Order History
+                Order history
               </Dropdown.Item>
             </Link>
 
@@ -94,7 +95,7 @@ const Header = () => {
               onClick={logoutUser}
               className="text-red-600 hover:bg-red-50"
             >
-              Sign Out
+              Sign out
             </Dropdown.Item>
           </Dropdown>
         ) : (
@@ -105,7 +106,7 @@ const Header = () => {
       </div>
 
       {/* Navbar Links */}
-      <Navbar.Collapse className="hidden lg:flex space-x-4">
+      <Navbar.Collapse className="hidden lg:flex space-x-4 ml-auto pr-10">
         <Link
           to="/"
           className={`${
@@ -128,7 +129,7 @@ const Header = () => {
             path === "/cars" ? "text-yellow-500" : "text-gray-300"
           } hover:text-yellow-500 transition duration-300`}
         >
-          Vehicles
+          Car
         </Link>
       </Navbar.Collapse>
     </Navbar>

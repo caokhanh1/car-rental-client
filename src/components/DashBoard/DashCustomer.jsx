@@ -5,6 +5,7 @@ import Pagination from "../Pagination";
 import EditCustomerModal from "./customer/EditCustomerModal";
 import DeleteCustomerModal from "./customer/DeleteCustomerModal";
 import ImageViewerModal from "./ImageViewerModal";
+import { Button } from "flowbite-react";
 
 export default function DashCustomers() {
   const api = useAxios();
@@ -37,7 +38,7 @@ export default function DashCustomers() {
 
     if (!didFetchData.current) {
       fetchUsers();
-      didFetchData.current = false;
+      didFetchData.current = true;
     }
   }, [api]);
 
@@ -98,16 +99,24 @@ export default function DashCustomers() {
       <div className="py-8">
         <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-semibold leading-tight">Customers</h2>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-          />
+          <div className="flex items-center space-x-4">
+            <Button
+              onClick={() => window.open("https://gplx.gov.vn/", "_blank")}
+              color="blue"
+            >
+              Kiểm tra GPLX
+            </Button>
+            <input
+              type="text"
+              placeholder="Search..."
+              className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
         </div>
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">

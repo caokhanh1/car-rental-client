@@ -289,11 +289,11 @@ const DashVehicle = () => {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       <p className="text-gray-900">
-                        {vehicle.pricePerHour} VND
+                        {vehicle.pricePerHour.toLocaleString("vi-VN")} VND
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
-                      <p className="text-gray-900">{vehicle.pricePerDay} VND</p>
+                      <p className="text-gray-900">{vehicle.pricePerDay.toLocaleString("vi-VN")} VND</p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center whitespace-nowrap">
                       {vehicle.imageURL ? (

@@ -345,7 +345,7 @@ const OrderHistory = () => {
                     </td>
                     {/* Total Cost */}
                     <td className="px-4 py-2 text-center font-medium text-gray-800 border-b border-gray-200">
-                      {order.cost} VND
+                      {order.cost.toLocaleString("vi-VN")} VND
                     </td>
                     {/* Status */}
                     <td className="px-4 py-2 text-center border-b border-gray-200">
@@ -541,19 +541,19 @@ const OrderHistory = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-500">Subtotal:</span>
                   <span className="font-semibold text-gray-800">
-                    {selectedOrder.cost} VND
+                    {selectedOrder.cost.toLocaleString("vi-VN")} VND
                   </span>
                 </div>
                 <div className="flex justify-between border-t pt-4">
                   <span className="text-gray-800 font-semibold">Total:</span>
                   <span className="text-xl font-bold text-gray-800">
-                    {selectedOrder.cost} VND
+                    {selectedOrder.cost.toLocaleString("vi-VN")} VND
                   </span>
                 </div>
                 <div className="flex justify-between border-t pt-4">
                   <span className="text-gray-500">Deposit Amount:</span>
                   <span className="font-semibold text-gray-800">
-                    {selectedOrder.deposit} VND
+                    {selectedOrder.deposit.toLocaleString("vi-VN")} VND
                   </span>
                 </div>
               </div>
