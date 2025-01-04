@@ -604,7 +604,7 @@ const DashRentalRequest = () => {
               onClick={() => window.open("https://www.csgt.vn/tra-cuu-phuong-tien-vi-pham.html", "_blank")}
               color="blue"
             >
-              Kiểm tra vi phạm
+              Check for violations
             </Button>
           </ModalFlowbite.Footer>
         </ModalFlowbite>

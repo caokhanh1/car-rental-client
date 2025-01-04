@@ -104,7 +104,7 @@ export default function DashCustomers() {
               onClick={() => window.open("https://gplx.gov.vn/", "_blank")}
               color="blue"
             >
-              Kiểm tra GPLX
+              Check GPLX
             </Button>
             <input
               type="text"
