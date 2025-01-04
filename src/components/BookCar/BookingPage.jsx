@@ -114,7 +114,7 @@ const BookingPage = () => {
 
       if (status === 200) {
         toast.success(
-          `Car booked successfully! Tổng số tiền quý khách phải thanh toán là ${data.toLocaleString("vi-VN")}`,
+          `Car booked successfully! The total amount you have to pay is ${data.toLocaleString("vi-VN")}`,
           {
             onClose: () => {
               navigate("/orders");
