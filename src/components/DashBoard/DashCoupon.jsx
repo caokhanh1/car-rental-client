@@ -10,6 +10,7 @@ export default function DashCoupon() {
   const [newCoupon, setNewCoupon] = useState({
     discountPercent: 0,
     isActive: true,
+    name: ""
   });
   const api = useAxios();
 
@@ -44,7 +45,7 @@ export default function DashCoupon() {
     try {
       const response = await api.post("/admins/coupons", newCoupon);
       setCoupons([...coupons, response.data]);
-      setNewCoupon({ discountPercent: 0, isActive: true });
+      setNewCoupon({ discountPercent: 0, isActive: true, name: "" });
       setShowModal(false);
     } catch (error) {
       console.error("Error creating coupon:", error);
@@ -106,7 +107,7 @@ export default function DashCoupon() {
                     ID
                   </th>
                   <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                    Code
+                    Name
                   </th>
                   <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
                     Discount Amount (%)
@@ -126,7 +127,7 @@ export default function DashCoupon() {
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
-                        {coupon.code}
+                        {coupon.name}
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -163,6 +164,16 @@ export default function DashCoupon() {
         <Modal.Body>
           <div className="space-y-4">
             <div>
+              <Label htmlFor="name" value="Name" />
+              <TextInput
+                id="name"
+                type="string"
+                placeholder="Enter coupon name"
+                value={newCoupon.name}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
               <Label htmlFor="discountPercent" value="Discount Amount (%)" />
               <TextInput
                 id="discountPercent"
@@ -183,7 +194,10 @@ export default function DashCoupon() {
                 className="w-32 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={newCoupon.status}
                 onChange={(e) =>
-                  setNewCoupon({ ...newCoupon, isActive: e.target.value == "Active" })
+                  setNewCoupon({
+                    ...newCoupon,
+                    isActive: e.target.value == "Active",
+                  })
                 }
               >
                 <option value="Active">Active</option>
