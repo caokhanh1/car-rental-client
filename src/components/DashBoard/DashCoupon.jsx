@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
-import axios from "axios"; 
 import { Modal, Button, TextInput, Label } from "flowbite-react";
-import { HiOutlineExclamationCircle, HiPlus } from "react-icons/hi"; 
+import { HiPlus } from "react-icons/hi";
+import useAxios from "../../utils/useAxios";
 
 export default function DashCoupon() {
   const [coupons, setCoupons] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [newCoupon, setNewCoupon] = useState({
-    code: '',
-    discountAmount: '',
-    expiryDate: '',
-    status: 'Active',
+    discountPercent: 0,
+    isActive: true,
+    name: ""
   });
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [couponIdToDelete, setCouponIdToDelete] = useState("");
+  const api = useAxios();
 
   useEffect(() => {
     const fetchCoupons = async () => {
       try {
-        const response = await axios.get('/api/coupon');
+        const response = await api.get("/admins/coupons");
         setCoupons(response.data);
       } catch (error) {
         console.error("Error fetching coupons:", error);
@@ -29,14 +27,7 @@ export default function DashCoupon() {
     fetchCoupons();
   }, []);
 
-  const filteredCoupons = coupons.filter(
-    (coupon) =>
-      coupon.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      coupon.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      coupon.discountAmount.toString().includes(searchTerm.toLowerCase()) ||
-      coupon.expiryDate.includes(searchTerm)
-  );
-
+  const filteredCoupons = coupons;
 
   const handleChange = (e) => {
     setNewCoupon({
@@ -45,37 +36,46 @@ export default function DashCoupon() {
     });
   };
 
-
   const handleCreateCoupon = async () => {
-    if (!newCoupon.code || !newCoupon.discountAmount || !newCoupon.expiryDate) {
+    if (!newCoupon.discountPercent) {
       alert("Vui lòng điền đầy đủ thông tin mã giảm giá.");
       return;
     }
 
     try {
-      const response = await axios.post('/api/coupon', newCoupon); 
-      setCoupons([...coupons, response.data]); 
-      setNewCoupon({ code: '', discountAmount: '', expiryDate: '', status: 'Active' });
+      const response = await api.post("/admins/coupons", newCoupon);
+      setCoupons([...coupons, response.data]);
+      setNewCoupon({ discountPercent: 0, isActive: true, name: "" });
       setShowModal(false);
     } catch (error) {
       console.error("Error creating coupon:", error);
     }
   };
 
-  const handleDeleteCoupon = async () => {
+  const handleToggleStatus = async (couponId) => {
+    const updatedCoupons = coupons.map((coupon) =>
+      coupon.id === couponId
+        ? { ...coupon, isActive: !coupon.isActive }
+        : coupon
+    );
+    setCoupons(updatedCoupons);
+
+    const couponToUpdate = updatedCoupons.find(
+      (coupon) => coupon.id === couponId
+    );
+
     try {
-      await axios.delete(`/api/coupon/${couponIdToDelete}`); 
-      setCoupons((prevCoupons) => prevCoupons.filter((coupon) => coupon.id !== couponIdToDelete));
-      setShowDeleteModal(false);
+      await api.put(`/admins/coupons/${couponId}`, {
+        isActive: couponToUpdate.isActive,
+      });
     } catch (error) {
-      console.error("Error deleting coupon:", error);
+      console.error("Error updating coupon status:", error);
     }
   };
 
   return (
     <div className="container mx-auto px-4 sm:px-8 mt-6">
       <div className="py-8">
-        {/* Tiêu đề và tìm kiếm */}
         <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-semibold leading-tight">Coupons</h2>
           <div className="flex space-x-4">
@@ -86,21 +86,18 @@ export default function DashCoupon() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button onClick={() => setShowModal(true)} gradientDuoTone="cyanToBlue">
-              <HiPlus className="mr-2" /> Add Coupon
+            <Button
+              onClick={() => setShowModal(true)}
+              style={{ backgroundColor: "rgb(41,55,70)" }}
+              className="focus:outline-none focus:ring-2 focus:ring-gray-500 hover:ring-2 hover:ring-gray-400"
+            >
+              <div className="flex items-center">
+                <HiPlus className="mr-2" /> Add Coupon
+              </div>
             </Button>
           </div>
         </div>
 
-        {/* Cảnh báo (nếu cần) */}
-        {coupons.length === 0 && (
-          <div className="flex items-center text-red-600 mb-4">
-            <HiOutlineExclamationCircle className="mr-2" />
-            <span>Không có mã giảm giá nào hiện có.</span>
-          </div>
-        )}
-
-        {/* Bảng hiển thị coupons */}
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
             <table className="min-w-full leading-normal">
@@ -110,19 +107,13 @@ export default function DashCoupon() {
                     ID
                   </th>
                   <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                    Code
+                    Name
                   </th>
                   <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
                     Discount Amount (%)
                   </th>
                   <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                    Expiry Date
-                  </th>
-                  <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
                     Status
-                  </th>
-                  <th className="px-5 py-3 bg-white border-b border-gray-200 text-gray-800 text-left text-sm uppercase font-normal">
-                    Actions
                   </th>
                 </tr>
               </thead>
@@ -130,40 +121,35 @@ export default function DashCoupon() {
                 {filteredCoupons.map((coupon) => (
                   <tr key={coupon.id}>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">{coupon.id}</p>
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        {coupon.id}
+                      </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">{coupon.code}</p>
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        {coupon.name}
+                      </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">{coupon.discountAmount}</p>
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        {coupon.discountPercent}
+                      </p>
                     </td>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">{new Date(coupon.expiryDate).toLocaleDateString()}</p>
-                    </td>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      {coupon.status === 'Active' ? (
-                        <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                          <span aria-hidden="true" className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                          <span className="relative">{coupon.status}</span>
-                        </span>
-                      ) : (
-                        <span className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
-                          <span aria-hidden="true" className="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
-                          <span className="relative">{coupon.status}</span>
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <button
-                        onClick={() => {
-                          setShowDeleteModal(true);
-                          setCouponIdToDelete(coupon.id);
-                        }}
-                        className="text-red-600 hover:text-red-900 mr-2"
-                      >
-                        Delete
-                      </button>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm whitespace-nowrap">
+                      <label className="inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={coupon.isActive}
+                          onChange={() => handleToggleStatus(coupon.id)}
+                          className="sr-only peer"
+                        />
+                        <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <span
+                          className={`ml-3 text-sm font-medium ${
+                            coupon.isActive ? "text-gray-900" : "text-gray-300"
+                          } dark:text-gray-300`}
+                        ></span>
+                      </label>
                     </td>
                   </tr>
                 ))}
@@ -173,46 +159,46 @@ export default function DashCoupon() {
         </div>
       </div>
 
-      {/* Modal Tạo Mã Giảm Giá */}
       <Modal show={showModal} onClose={() => setShowModal(false)}>
         <Modal.Header>Create New Coupon</Modal.Header>
         <Modal.Body>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="code" value="Coupon Code" />
+              <Label htmlFor="name" value="Name" />
               <TextInput
-                id="code"
-                type="text"
-                placeholder="Enter coupon code"
-                value={newCoupon.code}
+                id="name"
+                type="string"
+                placeholder="Enter coupon name"
+                value={newCoupon.name}
                 onChange={handleChange}
               />
             </div>
             <div>
-              <Label htmlFor="discountAmount" value="Discount Amount (%)" />
+              <Label htmlFor="discountPercent" value="Discount Amount (%)" />
               <TextInput
-                id="discountAmount"
+                id="discountPercent"
                 type="number"
-                placeholder="e.g., 10 for 10%"
-                value={newCoupon.discountAmount}
+                placeholder="Enter discount percent"
+                value={newCoupon.discountPercent}
                 onChange={handleChange}
               />
             </div>
-            <div>
-              <Label htmlFor="expiryDate" value="Expiry Date" />
-              <TextInput
-                id="expiryDate"
-                type="date"
-                value={newCoupon.expiryDate}
-                onChange={handleChange}
+            <div className="mb-4">
+              <Label
+                htmlFor="status"
+                value="Status"
+                className="block text-sm font-medium text-gray-700 mb-2"
               />
-            </div>
-            <div>
-              <Label htmlFor="status" value="Status" />
               <select
                 id="status"
+                className="w-32 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={newCoupon.status}
-                onChange={(e) => setNewCoupon({ ...newCoupon, status: e.target.value })}
+                onChange={(e) =>
+                  setNewCoupon({
+                    ...newCoupon,
+                    isActive: e.target.value == "Active",
+                  })
+                }
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -221,25 +207,15 @@ export default function DashCoupon() {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleCreateCoupon}>Create</Button>
+          <Button
+            onClick={handleCreateCoupon}
+            style={{ backgroundColor: "rgb(41,55,70)" }}
+            className="focus:outline-none focus:ring-2 focus:ring-gray-500 hover:ring-2 hover:ring-gray-400"
+          >
+            Create
+          </Button>
           <Button onClick={() => setShowModal(false)} color="gray">
             Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Modal Xóa Mã Giảm Giá */}
-      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-        <Modal.Header>Delete Coupon</Modal.Header>
-        <Modal.Body>
-          <p>Bạn có chắc chắn muốn xóa mã giảm giá này không?</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleDeleteCoupon} color="red">
-            Yes
-          </Button>
-          <Button onClick={() => setShowDeleteModal(false)} color="gray">
-            No
           </Button>
         </Modal.Footer>
       </Modal>
