@@ -114,7 +114,7 @@ const BookingPage = () => {
 
       if (status === 200) {
         toast.success(
-          `Car booked successfully! Tổng số tiền quý khách phải thanh toán là ${data.toLocaleString("vi-VN")}`,
+          `Car booked successfully! The total amount you have to pay is ${data.toLocaleString("vi-VN")}`,
           {
             onClose: () => {
               navigate("/orders");
@@ -157,7 +157,7 @@ const BookingPage = () => {
               className="w-full max-h-[400px] rounded-xl shadow-lg object-cover"
             />
           </div>
-
+          {/* Description */}
           <div className="bg-gray-100 p-6 rounded-xl shadow-md flex-grow">
             <h2 className="text-2xl font-bold mb-4 text-gray-800">
               Description

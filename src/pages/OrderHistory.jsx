@@ -437,7 +437,7 @@ const OrderHistory = () => {
           </button>
         )}
       </div>
-
+      {/* Order Summary */}
       <ModalReactModal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -598,7 +598,7 @@ const OrderHistory = () => {
           )}
         </div>
       </ModalReactModal>
-
+      {/* ConditionImages */}
       <ModalReactModal
         isOpen={conditionImagesOpen}
         onRequestClose={closeConditionImages}
@@ -723,6 +723,7 @@ const OrderHistory = () => {
           )}
         </div>
       </ModalReactModal>
+{/* contractModal */}
       <ModalReactModal
         isOpen={contractModalOpen}
         onRequestClose={closeContractModal}
