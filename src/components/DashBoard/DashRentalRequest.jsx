@@ -601,7 +601,7 @@ const DashRentalRequest = () => {
               Cancel
             </Button>
             <Button
-              onClick={() => window.open("https://www.csgt.vn/tra-cuu-phuong-tien-vi-pham.html", "_blank")}
+              onClick={() => window.open("https://checkphatnguoi.vn", "_blank")}
               color="blue"
             >
               Check for violations
