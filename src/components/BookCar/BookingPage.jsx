@@ -15,17 +15,20 @@ const BookingPage = () => {
   const [car, setCar] = useState(null);
   const [user, setUser] = useState(null);
   const [coupons, setCoupons] = useState([]);
+  const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [pickupDate, setPickupDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [selectedCoupon, setSelectedCoupon] = useState("");
+  const [selectedDriver, setSelectedDriver] = useState("");
   const [drivingOption, setDrivingOption] = useState("withDriver");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    !selectedDriver && drivingOption === "withDriver"
     const fetchUser = async () => {
       try {
         const { data, status } = await api.get("/me");
@@ -42,7 +45,7 @@ const BookingPage = () => {
         const { data, status } = await api.get(`/users/cars/${carId}`);
         if (status === 200) {
           setCar(data.car);
-          setCanComment(data.canComment)
+          setCanComment(data.canComment);
         }
       } catch (error) {
         toast.error("Failed to fetch car details");
@@ -60,7 +63,24 @@ const BookingPage = () => {
       }
     };
 
-    Promise.all([fetchCar(), fetchUser(), fetchCoupons()]).finally(() => {
+    const fetchDrivers = async () => {
+      try {
+        const { data, status } = await api.get("/users/drivers");
+        if (status === 200) {
+          setDrivers(data);
+        }
+      } catch (error) {
+        toast.error("Failed to fetch coupons");
+      }
+    };
+
+
+    Promise.all([
+      fetchCar(),
+      fetchUser(),
+      fetchCoupons(),
+      fetchDrivers(),
+    ]).finally(() => {
       setLoading(false);
     });
   }, [carId]);
@@ -98,15 +118,26 @@ const BookingPage = () => {
         );
         return;
       }
-      console.log("pickupDate", moment(pickupDate).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss'))
-      console.log("returnDate", moment(returnDate).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss'))
+      console.log(
+        "pickupDate",
+        moment(pickupDate).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
+      );
+      console.log(
+        "returnDate",
+        moment(returnDate).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
+      );
       const bookingData = {
         carID: car.id,
         carName: car.name,
         withDriver: drivingOption === "withDriver",
-        startDate: moment(pickupDate).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss'),
-        endDate: moment(returnDate).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss'),
+        startDate: moment(pickupDate)
+          .tz("Asia/Bangkok")
+          .format("YYYY-MM-DD HH:mm:ss"),
+        endDate: moment(returnDate)
+          .tz("Asia/Bangkok")
+          .format("YYYY-MM-DD HH:mm:ss"),
         couponID: selectedCoupon || null,
+        driverID: selectedDriver || null,
         message: message,
       };
 
@@ -114,12 +145,15 @@ const BookingPage = () => {
 
       if (status === 200) {
         toast.success(
-          `Car booked successfully! The total amount you have to pay is ${data.toLocaleString("vi-VN")}`,
+          `Car booked successfully! The total amount you have to pay is ${data.toLocaleString(
+            "vi-VN"
+          )}`,
           {
             onClose: () => {
               navigate("/orders");
             },
-          });
+          }
+        );
       } else {
         toast.error("Failed to book car");
         setIsSubmitting(false);
@@ -157,7 +191,7 @@ const BookingPage = () => {
               className="w-full max-h-[400px] rounded-xl shadow-lg object-cover"
             />
           </div>
-          {/* Description */}
+
           <div className="bg-gray-100 p-6 rounded-xl shadow-md flex-grow">
             <h2 className="text-2xl font-bold mb-4 text-gray-800">
               Description
@@ -272,6 +306,30 @@ const BookingPage = () => {
               </label>
             </div>
 
+            <div
+              className={`transition-all duration-300 ease-in-out ${
+                drivingOption === "withDriver"
+                  ? "opacity-100 max-h-screen"
+                  : "opacity-0 max-h-0 overflow-hidden"
+              }`}
+            >
+              <label className="block text-sm font-medium mb-2 text-gray-700">
+                Driver
+              </label>
+              <select
+                value={selectedDriver}
+                onChange={(e) => setSelectedDriver(e.target.value)}
+                className="w-full border-2 border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+              >
+                <option value="">Select a driver</option>
+                {drivers.map((driver) => (
+                  <option key={driver.id} value={driver.id}>
+                    {driver.name} ({driver.age} tuổi) {driver.gender} 
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="flex space-x-4">
               <div className="w-1/2">
                 <label className="block text-sm font-medium mb-2 text-gray-700">
@@ -320,10 +378,14 @@ const BookingPage = () => {
                     return date.getDate() >= pickupDate.getDate();
                   }}
                   filterTime={(time) => {
-                    if (pickupDate && time.toDateString() === new Date(pickupDate).toDateString()) {
+                    if (
+                      pickupDate &&
+                      time.toDateString() ===
+                        new Date(pickupDate).toDateString()
+                    ) {
                       return time.getTime() > new Date(pickupDate).getTime();
                     }
-                    return true; 
+                    return true;
                   }}
                   showTimeSelect
                   dateFormat="Pp"
@@ -371,7 +433,13 @@ const BookingPage = () => {
                 type="checkbox"
                 id="terms"
                 checked={termsAccepted}
-                onChange={() => setTermsAccepted(!termsAccepted)}
+                onChange={() => {
+                  console.log("selectedDriver",!selectedDriver)
+                  console.log("drivingOption",drivingOption, drivingOption === "withDriver")
+
+                  console.log(!selectedDriver && drivingOption === "withDriver", "--------------")
+                  setTermsAccepted(!termsAccepted)
+                }}
                 className="mr-2"
               />
               <label htmlFor="terms" className="text-sm text-gray-500">
@@ -385,7 +453,7 @@ const BookingPage = () => {
             <button
               onClick={handleBooking}
               className={`w-full py-3 mt-6 rounded-lg shadow-md transition-colors duration-300 ${
-                !user.isActive && drivingOption === "selfDrive"
+                !user.isActive && drivingOption === "selfDrive" || (!selectedDriver && drivingOption === "withDriver")
                   ? "bg-gray-400 text-white cursor-not-allowed"
                   : car.isInUse ||
                     !termsAccepted ||
@@ -396,7 +464,8 @@ const BookingPage = () => {
                   : "bg-gradient-to-r from-yellow-500 to-yellow-600 text-white hover:from-yellow-600 hover:to-yellow-700"
               }`}
               disabled={
-                !user?.isActive && drivingOption === "selfDrive" ||
+                (!user?.isActive && drivingOption === "selfDrive") ||
+                (!selectedDriver && drivingOption === "withDriver") ||
                 car?.isInUse ||
                 !termsAccepted ||
                 !pickupDate ||
@@ -406,8 +475,10 @@ const BookingPage = () => {
             >
               {isSubmitting
                 ? "Processing..."
-                : !user.isActive && drivingOption === "selfDrive"
+                : !user.isActive && drivingOption === "selfDrive" 
                 ? "Account Not Activated"
+                : !selectedDriver && drivingOption === "withDriver"
+                ? "No Driver Available"
                 : car.isInUse
                 ? "Currently Booked"
                 : "Book Now"}
