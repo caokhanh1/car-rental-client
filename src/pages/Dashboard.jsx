@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import DashSidebar from "../components/DashBoard/DashSidebar";
 import DashCustomer from "../components/DashBoard/DashCustomer";
+import DashDriver from "../components/DashBoard/DashDriver";
 import DashProfile from "../components/DashBoard/DashProfile";
 import DashComments from "../components/DashBoard/DashComment";
 import DashCoupon from "../components/DashBoard/DashCoupon";
@@ -35,6 +36,7 @@ const Dashboard = () => {
           {tab === "vehicles" && <DashVehicle />}
           {tab === "profile" && <DashProfile />}
           {tab === "customers" && <DashCustomer />}
+          {tab === "drivers" && <DashDriver />}
           {tab === "comments" && <DashComments />}
           {tab === "coupon" && <DashCoupon />}
           {tab === "rentals" && <DashRentalRequest />}
