@@ -40,11 +40,11 @@ const Footer = () => {
             </p>
             <div className="flex items-center gap-3 mt-4">
               <FaLocationArrow className="text-primary" />
-              <p className="text-sm opacity-80">Noida, Uttar Pradesh</p>
+              <p className="text-sm opacity-80">VIET NAM,DA NANG</p>
             </div>
             <div className="flex items-center gap-3 mt-2">
               <FaMobileAlt className="text-primary" />
-              <p className="text-sm opacity-80">+91 123456789</p>
+              <p className="text-sm opacity-80">+91 0914511444</p>
             </div>
             {/* Social Media Icons */}
             <div className="flex gap-5 mt-6">
